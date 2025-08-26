@@ -2,6 +2,7 @@ import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import TutorSidebar from '../components/tutor/Sidebar';
 import TutorTopbar from '../components/tutor/Topbar';
+import WhatsAppWidget from "../components/FloatingButton";
 import { useState } from 'react';
 
 const TutorLayout = () => {
@@ -50,6 +51,7 @@ const TutorLayout = () => {
           backgroundColor: theme.palette.background.paper,
         }}>
           <Outlet />
+          <WhatsAppWidget />
         </Box>
       </Box>
     </Box>

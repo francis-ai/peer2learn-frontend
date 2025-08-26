@@ -16,10 +16,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/studentAuthContext";
 
-import StepCourseLocation from "../../components/enrollForm/StepCourseLocation";
-import StepDeliveryMethod from "../../components/enrollForm/StepDeliveryMethod";
-import StepTutorSelect from "../../components/enrollForm/StepTutorSelect";
-import StepPayment from "../../components/enrollForm/StepPayment";
+import StepCourseLocation from "./StepCourseLocation";
+import StepDeliveryMethod from "./StepDeliveryMethod";
+import StepTutorSelect from "./StepTutorSelect";
+import StepPayment from "./StepPayment";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || "pk_test_5624a1b37a80ce2f38d7d2da8e5d02a2a405d8de";
@@ -27,6 +27,7 @@ const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || "pk_tes
 export default function EnrollForm() {
   const navigate = useNavigate();
   const { student } = useAuth();
+
   const [activeStep, setActiveStep] = useState(0);
   const [courses, setCourses] = useState([]);
   const [locations, setLocations] = useState([]);

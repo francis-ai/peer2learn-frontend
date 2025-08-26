@@ -87,11 +87,11 @@ export default function Navbar() {
   // Navigation items - only shown when logged in
   const navItems = [
     { path: '/dashboard', label: 'Dashboard' },
-    { path: '/profile', label: 'Profile' },
     { path: '/my-classes', label: 'Classes' },
     { path: '/payment', label: 'Payment' },
     { path: '/reviews', label: 'Reviews' },
     { path: '/notifications', label: 'Notifications' },
+    { path: '/profile', label: 'Profile' },
   ];
 
   // Auth items - only shown when NOT logged in

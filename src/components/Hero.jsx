@@ -68,7 +68,9 @@ export default function Hero() {
       <Container>
         <Grid container justifyContent="center">
           <Grid item xs={12} md={8} sx={{ textAlign: 'center' }}>
-            <BadgeContainer>
+            <BadgeContainer sx={{
+              mt: {xs: 10, md: 1}
+            }}>
               <PillBadge sx={{ fontSize: { xs: '10px' } }}>ONLINE CLASSES</PillBadge>
               <PillBadge sx={{ ml: 2, fontSize: { xs: '10px' } }}>ON-SITE CLASSES</PillBadge>
             </BadgeContainer>

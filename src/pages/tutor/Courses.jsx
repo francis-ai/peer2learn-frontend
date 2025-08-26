@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   Box, Button, Card, CardContent, Typography, Grid, IconButton,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-  Menu, MenuItem, ListItemIcon, Divider, Chip, Snackbar, Alert, Select, InputLabel, FormControl
+  Menu, MenuItem, ListItemIcon, Divider, Chip, Snackbar, Alert, Select
 } from '@mui/material';
 import {
   Add as AddIcon, MoreVert as MoreIcon, Edit as EditIcon,
@@ -13,7 +13,6 @@ import { useTutorAuth } from '../../context/tutorAuthContext';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-
 export default function MyCourses() {
   const { tutor } = useTutorAuth();
   const tutorId = tutor?.id;
@@ -21,11 +20,20 @@ export default function MyCourses() {
   const [allCourseTitles, setAllCourseTitles] = useState([]);
 
   const [openModal, setOpenModal] = useState(false);
+  const [openAddCourseModal, setOpenAddCourseModal] = useState(false);
+  const [newCourseName, setNewCourseName] = useState('');
+
   const [currentCourse, setCurrentCourse] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
 
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+  // Form state
+  const [formData, setFormData] = useState({
+    course_id: '',
+    course_name: '',
+  });
 
   const fetchCourses = useCallback(async () => {
     try {
@@ -49,17 +57,60 @@ export default function MyCourses() {
     fetchCourses();
     fetchCourseTitles();
   }, [fetchCourses, fetchCourseTitles]);
-  
-
 
   const handleOpenModal = (course = null) => {
     setCurrentCourse(course);
+    if (course) {
+      setFormData({
+        course_id: course.course_id || '',
+        course_name: course.name || '',
+      });
+    } else {
+      setFormData({ course_id: '', course_name: '' });
+    }
     setOpenModal(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let courseId = formData.course_id;
+
+      // If new course (no id), create it first
+      if (!courseId) {
+        const res = await axios.post(`${BASE_URL}/api/view/courses`, { name: formData.course_name });
+        courseId = res.data.id; 
+        await fetchCourseTitles(); // refresh options
+      }
+
+      const courseData = {
+        tutor_id: tutorId,
+        course_id: courseId,
+        course_description: e.target.description.value,
+        price: parseFloat(e.target.price.value),
+        duration: e.target.duration.value
+      };
+
+      if (currentCourse) {
+        await axios.put(`${BASE_URL}/api/tutors/update-course/${currentCourse.id}`, courseData);
+        setSnackbar({ open: true, message: 'Course updated successfully', severity: 'success' });
+      } else {
+        await axios.post(`${BASE_URL}/api/tutors/submit-course`, courseData);
+        setSnackbar({ open: true, message: 'Course submitted successfully', severity: 'success' });
+      }
+
+      fetchCourses();
+      handleCloseModal();
+    } catch (err) {
+      console.error(err);
+      setSnackbar({ open: true, message: 'Submission failed', severity: 'warning' });
+    }
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
     setCurrentCourse(null);
+    setFormData({ course_id: '', course_name: '' });
   };
 
   const handleMenuOpen = (event, courseId) => {
@@ -89,30 +140,24 @@ export default function MyCourses() {
     handleMenuClose();
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const courseData = {
-      tutor_id: tutorId,
-      course_id: formData.get('course_id'),
-      course_description: formData.get('description'),
-      price: parseFloat(formData.get('price')),
-      duration: formData.get('duration')
-    };
-
+  const handleSaveNewCourse = async () => {
     try {
-      if (currentCourse) {
-        await axios.put(`${BASE_URL}/api/tutors/update-course/${currentCourse.id}`, courseData);
-        setSnackbar({ open: true, message: 'Course updated successfully', severity: 'success' });
-      } else {
-        await axios.post(`${BASE_URL}/api/tutors/submit-course`, courseData);
-        setSnackbar({ open: true, message: 'Course submitted successfully', severity: 'success' });
-      }
-      fetchCourses();
-      handleCloseModal();
+      const res = await axios.post(`${BASE_URL}/api/view/courses`, { name: newCourseName });
+      const newCourse = res.data;
+
+      await fetchCourseTitles();
+
+      setFormData({
+        course_id: newCourse.id,
+        course_name: newCourse.name,
+      });
+
+      setNewCourseName('');
+      setOpenAddCourseModal(false);
+      setSnackbar({ open: true, message: 'New course added!', severity: 'success' });
     } catch (err) {
       console.error(err);
-      setSnackbar({ open: true, message: 'Submission failed', severity: 'error' });
+      setSnackbar({ open: true, message: 'Error adding course', severity: 'error' });
     }
   };
 
@@ -167,22 +212,35 @@ export default function MyCourses() {
           <DialogContent dividers>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <FormControl fullWidth margin="normal">
-                  <InputLabel required>Course Title</InputLabel>
-                  <Select
-                    name="course_id"
-                    defaultValue={currentCourse?.course_id || ''}
-                    required
-                    disabled={!!currentCourse}
-                  >
-                    {allCourseTitles.map(course => (
-                      <MenuItem key={course.id} value={course.id}>
-                        {course.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Select
+                  fullWidth
+                  required
+                  sx={{width: 200}}
+                  value={formData.course_id || ''}
+                  onChange={(e) => {
+                    if (e.target.value === 'add_new') {
+                      setOpenAddCourseModal(true);
+                    } else {
+                      const selected = allCourseTitles.find(c => c.id === e.target.value);
+                      setFormData({
+                        course_id: selected?.id || '',
+                        course_name: selected?.name || '',
+                      });
+                    }
+                  }}
+                  disabled={!!currentCourse} // disable if editing
+                >
+                  {allCourseTitles.map((course) => (
+                    <MenuItem key={course.id} value={course.id}>
+                      {course.name}
+                    </MenuItem>
+                  ))}
+                  <MenuItem value="add_new" sx={{ fontStyle: "italic", color: "primary.main" }}>
+                    + Add New Course
+                  </MenuItem>
+                </Select>
               </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -226,6 +284,24 @@ export default function MyCourses() {
             </Button>
           </DialogActions>
         </Box>
+      </Dialog>
+
+      {/* Add Course Modal */}
+      <Dialog open={openAddCourseModal} onClose={() => setOpenAddCourseModal(false)}>
+        <DialogTitle>Add New Course</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            autoFocus
+            label="Course Name"
+            value={newCourseName}
+            onChange={(e) => setNewCourseName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAddCourseModal(false)}>Cancel</Button>
+          <Button onClick={handleSaveNewCourse} variant="contained">Save</Button>
+        </DialogActions>
       </Dialog>
 
       {/* Options Menu */}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -36,32 +36,32 @@ const CurrentCourses = () => {
   const [reactivating, setReactivating] = useState(null);
 
   // Fetch current courses
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/students/current-courses/${studentId}`);
       setCourses(res.data);
       setLoading(false);
     } catch (err) {
-      console.error('Failed to fetch courses:', err);
+      console.error("Failed to fetch courses:", err);
       setLoading(false);
     }
-  };
+    }, [studentId]); // depends on studentId
 
-  // Fetch held courses
-  const fetchHeldCourses = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/api/students/held-courses/${studentId}`);
-      setHeldCourses(res.data.map(c => c.id)); // store only IDs
-    } catch (err) {
-      console.error('Failed to fetch held courses:', err);
-    }
-  };
+    // Fetch held courses
+    const fetchHeldCourses = useCallback(async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/students/held-courses/${studentId}`);
+        setHeldCourses(res.data.map((c) => c.id)); // store only IDs
+      } catch (err) {
+        console.error("Failed to fetch held courses:", err);
+      }
+    }, [studentId]); // depends on studentId
 
-  useEffect(() => {
-    if (!studentId) return;
-    fetchCourses();
-    fetchHeldCourses();
-  }, [studentId]);
+    useEffect(() => {
+      if (!studentId) return;
+      fetchCourses();
+      fetchHeldCourses();
+    }, [studentId, fetchCourses, fetchHeldCourses]);
 
   const handleOpenModal = (syllabus, title) => {
     setSelectedSyllabus(syllabus);

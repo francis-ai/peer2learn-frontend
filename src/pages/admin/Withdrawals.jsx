@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback} from "react";
 import {
   Box,
   Typography,
@@ -34,15 +34,8 @@ const Withdrawals = () => {
   const [rejectReason, setRejectReason] = useState("");
   const [selectedWithdrawal, setSelectedWithdrawal] = useState(null);
 
-  useEffect(() => {
-    fetchWithdrawals();
-  }, []);
-
-  useEffect(() => {
-    filterData();
-  }, [search, withdrawals]);
-
-  const fetchWithdrawals = async () => {
+  // Fetch withdrawals
+  const fetchWithdrawals = useCallback(async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/admin/tutor-withdrawals`);
       setWithdrawals(res.data);
@@ -50,18 +43,30 @@ const Withdrawals = () => {
       console.error(err);
       setSnackbar({ open: true, message: "Error fetching withdrawals", severity: "error" });
     }
-  };
+  }, []);
 
-  const filterData = () => {
+  // Filter data
+  const filterData = useCallback(() => {
     const lower = search.toLowerCase();
     const filteredData = withdrawals.filter(
-      w =>
+      (w) =>
         w.tutor_name?.toLowerCase().includes(lower) ||
         w.bank_name?.toLowerCase().includes(lower) ||
         w.status?.toLowerCase().includes(lower)
     );
     setFiltered(filteredData);
-  };
+  }, [search, withdrawals]);
+
+  // Run once on mount
+  useEffect(() => {
+    fetchWithdrawals();
+  }, [fetchWithdrawals]);
+
+  // Run whenever search or withdrawals change
+  useEffect(() => {
+    filterData();
+  }, [filterData]);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

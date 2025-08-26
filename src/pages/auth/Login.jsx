@@ -119,7 +119,7 @@ export default function Login() {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Welcome Back
+              Student Login
             </Typography>
             <Typography color="text.secondary">
               Log in to access your dashboard

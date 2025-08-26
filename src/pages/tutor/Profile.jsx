@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import {
   Box, Typography, Card, CardContent, Avatar, Grid, Chip,
-  TextField, Button, Divider, MenuItem, InputAdornment, Snackbar, Alert
+  TextField, Button, Divider, MenuItem, InputAdornment, Snackbar, Alert, Autocomplete
 } from '@mui/material';
 import {
   Person as PersonIcon, 
@@ -25,11 +25,11 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 export default function Profile() {
   const { tutor } = useTutorAuth();
   const tutorId = tutor?.id;
-
   const [editMode, setEditMode] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [locations, setLocations] = useState([]);
+  const [locationInput, setLocationInput] = useState(""); // track typed value
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const [formData, setFormData] = useState({
@@ -82,7 +82,6 @@ export default function Profile() {
     }
   }, []);
 
-
   useEffect(() => {
     if (tutorId) {
       fetchTutorProfile();
@@ -109,29 +108,61 @@ export default function Profile() {
 
   const handleSave = async () => {
     try {
-      const payload = new FormData();
-      payload.append('name', formData.name);
-      payload.append('email', formData.email);
-      payload.append('phone', formData.phone);
-      payload.append('address', formData.address);
-      payload.append('degree', formData.education);
-      payload.append('bio', formData.bio);
-      payload.append('location', formData.location);
-      payload.append('gender', formData.gender);
-      if (selectedFile) {
-        payload.append('profile_img', selectedFile);
+      let finalLocation = formData.location;
+
+      // 1. Check if location exists
+      const exists = locations.some(
+        (loc) => loc.location_name.toLowerCase() === formData.location.toLowerCase()
+      );
+
+      // 2. If not exists, add it to DB first
+      if (!exists && formData.location.trim() !== "") {
+        const res = await axios.post(`${BASE_URL}/api/view/locations`, {
+          location_name: formData.location,
+        });
+        finalLocation = res.data.location.location_name; // backend should return new location
+
+        // Refresh local list of locations
+        const res2 = await axios.get(`${BASE_URL}/api/view/locations`);
+        setLocations(res2.data);
       }
 
+      // 3. Prepare profile update payload
+      const payload = new FormData();
+      payload.append("name", formData.name);
+      payload.append("email", formData.email);
+      payload.append("phone", formData.phone);
+      payload.append("address", formData.address);
+      payload.append("degree", formData.education);
+      payload.append("bio", formData.bio);
+      payload.append("gender", formData.gender);
+      payload.append("location", finalLocation); // ✅ string because tutors table stores location
+
+      if (selectedFile) {
+        payload.append("profile_img", selectedFile);
+      }
+
+      // 4. Update tutor profile
       await axios.put(`${BASE_URL}/api/tutors/update-profile/${tutorId}`, payload);
 
-      setSnackbar({ open: true, message: 'Profile updated successfully!', severity: 'success' });
+      setSnackbar({
+        open: true,
+        message: "Profile updated successfully!",
+        severity: "success",
+      });
       setEditMode(false);
       fetchTutorProfile();
     } catch (err) {
       console.error(err);
-      setSnackbar({ open: true, message: 'Failed to update profile', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: "Failed to update profile",
+        severity: "error",
+      });
     }
   };
+  // 👇 wherever you update or use it
+  console.log("locationInput:", locationInput);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -315,24 +346,27 @@ export default function Profile() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <TextField
-                    select
-                    fullWidth
-                    label="Select Location"
-                    name="location"
+                  <Autocomplete
+                    freeSolo // 👉 allows typing new values
+                    options={locations.map((loc) => loc.location_name)}
                     value={formData.location}
-                    onChange={handleInputChange}
-                    disabled={!editMode}
-                    sx={{width:  '225px'}}
-                  >
-                    
-                    {locations.map((loc) => (
-                      <MenuItem key={loc.id} value={loc.location_name}>
-                        {loc.location_name}
-                      </MenuItem>
-                    ))}
-
-                  </TextField>
+                    onChange={(event, newValue) => {
+                      setFormData({ ...formData, location: newValue });
+                    }}
+                    onInputChange={(event, newInputValue) => {
+                      setFormData({ ...formData, location: newInputValue }); // keep formData in sync
+                      setLocationInput(newInputValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        fullWidth
+                        label="Select or Add Location"
+                        disabled={!editMode}
+                        sx={{ width: "225px" }}
+                      />
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={12}>
