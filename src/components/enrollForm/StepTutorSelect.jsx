@@ -14,9 +14,13 @@ import {
   List,
   ListItem,
   ListItemText,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
-import { CheckCircle } from "@mui/icons-material";
+import { CheckCircle, Star, RateReview } from "@mui/icons-material";
 import { useState } from "react";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -36,20 +40,22 @@ export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
   };
 
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
+    <Box sx={{ mt: 2 }}>
+      <Typography variant="h6" gutterBottom textAlign="center">
         Available Tutors
       </Typography>
-      <Typography color="text.secondary" gutterBottom>
-        {formData.location === "Online"
+      <Typography color="text.secondary" textAlign="center">
+        {formData.deliveryMethod === "online"
           ? "Tutors available for online sessions (50% discount applied)"
-          : `Tutors in ${formData.location}`}
+          : "Tutors available for on-site sessions"}
       </Typography>
 
-      <Grid container spacing={2} sx={{ mt: 2 }}>
+      <Grid container spacing={2} sx={{ mt: 3 }}>
         {tutors.length === 0 ? (
           <Grid item xs={12}>
-            <Typography>No tutors available for this selection.</Typography>
+            <Typography textAlign="center" color="text.secondary">
+              No tutors available for this selection.
+            </Typography>
           </Grid>
         ) : (
           tutors.map((item) => {
@@ -60,64 +66,109 @@ export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
                 : parseInt(item.price, 10).toLocaleString();
 
             return (
-              <Grid item xs={12} key={item.tutor_course_id}>
+              <Grid item xs={12} sm={6} md={4} key={item.tutor_course_id}>
                 <Card
-                  variant={isSelected ? "elevation" : "outlined"}
-                  elevation={isSelected ? 3 : 0}
-                  onClick={() => !item.is_occupied && onSelectTutor(item.tutor_course_id)}
+                  onClick={() =>
+                    !item.is_occupied && onSelectTutor(item.tutor_course_id)
+                  }
                   sx={{
                     p: 2,
                     cursor: item.is_occupied ? "not-allowed" : "pointer",
                     opacity: item.is_occupied ? 0.6 : 1,
-                    borderColor: isSelected ? "primary.main" : "",
+                    border: isSelected
+                      ? "2px solid #1976d2"
+                      : "1px solid #e0e0e0",
+                    borderRadius: 3,
+                    boxShadow: isSelected ? 6 : 2,
+                    transition: "all 0.3s ease",
                     "&:hover": {
-                      borderColor: item.is_occupied ? "" : "primary.main",
+                      boxShadow: 5,
+                      transform: "translateY(-4px)",
                     },
                   }}
                 >
-                  <Box display="flex" alignItems="center" justifyContent="space-between">
-                    <Box display="flex" alignItems="center">
-                      <Avatar sx={{ mr: 2 }}>{(item.tutor_name || "?").charAt(0)}</Avatar>
-                      <Box>
-                        <Typography fontWeight="bold">{item.tutor_name}</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Course: {item.course_name} • Price: ₦{displayPrice}
-                          {formData.deliveryMethod === "online" && (
-                            <span
-                              style={{
-                                textDecoration: "line-through",
-                                marginLeft: 4,
-                                color: "#999",
-                              }}
-                            >
-                              ₦{parseInt(item.price, 10).toLocaleString()}
-                            </span>
-                          )}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Duration: {item.duration} • Location: {formData.location}
-                        </Typography>
-                      </Box>
+                  <Box
+                    display="flex"
+                    flexDirection={{ xs: "column", sm: "row" }}
+                    alignItems="center"
+                    gap={2}
+                  >
+                    <Avatar
+                      src={
+                        item.tutor_image
+                          ? `${BASE_URL}/uploads/tutors/${item.tutor_image}`
+                          : undefined
+                      }
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        border: "2px solid #1976d2",
+                        bgcolor: item.tutor_image ? "transparent" : "#1976d2",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                      }}
+                    >
+                      {!item.tutor_image && (item.tutor_name?.charAt(0).toUpperCase() || "?")}
+                    </Avatar>
+
+                    <Box flex={1} textAlign={{ xs: "center", sm: "left" }}>
+                      <Typography fontWeight="bold" fontSize="1rem">
+                        {item.tutor_name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {item.course_name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Duration: {item.duration}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        ₦{displayPrice}
+                        {formData.deliveryMethod === "online" && (
+                          <span
+                            style={{
+                              textDecoration: "line-through",
+                              marginLeft: 4,
+                              color: "#999",
+                            }}
+                          >
+                            ₦{parseInt(item.price, 10).toLocaleString()}
+                          </span>
+                        )}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        📍 {item.location}
+                      </Typography>
                     </Box>
 
-                    <Box display="flex" flexDirection="column" alignItems="flex-end">
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      gap={1}
+                    >
                       {item.is_occupied && (
-                        <Chip label="Tutor is Occupied" color="error" size="small" sx={{ mb: 1 }} />
+                        <Chip
+                          label="Occupied"
+                          color="error"
+                          size="small"
+                          sx={{ fontSize: "0.7rem" }}
+                        />
                       )}
 
-                      <Button
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openReviews(item);
-                        }}
-                        variant="outlined"
-                        sx={{ mb: 1 }}
-                      >
-                        View Reviews
-                      </Button>
+                      <Tooltip title="View Reviews">
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openReviews(item);
+                          }}
+                        >
+                          <RateReview color="action" />
+                        </IconButton>
+                      </Tooltip>
 
-                      {isSelected && <CheckCircle color="primary" sx={{ mt: 1 }} />}
+                      {isSelected && <CheckCircle color="primary" />}
                     </Box>
                   </Box>
                 </Card>
@@ -128,17 +179,27 @@ export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
       </Grid>
 
       {/* Reviews Modal */}
-      <Dialog open={reviewModalOpen} onClose={closeReviews} maxWidth="sm" fullWidth>
+      <Dialog
+        open={reviewModalOpen}
+        onClose={closeReviews}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Reviews for {reviewTutorName}</DialogTitle>
         <DialogContent dividers>
-          {(selectedTutorReviews || []).length === 0 ? (
+          {selectedTutorReviews.length === 0 ? (
             <Typography>No reviews available.</Typography>
           ) : (
             <List>
               {selectedTutorReviews.map((review, idx) => (
-                <ListItem key={idx} alignItems="flex-start" divider>
+                <ListItem key={idx} divider alignItems="flex-start">
                   <ListItemText
-                    primary={`⭐ ${review.rating} - ${review.student_name}`}
+                    primary={
+                      <>
+                        <Star sx={{ color: "#FFD700", fontSize: 18, mr: 0.5 }} />
+                        {review.rating} - {review.student_name}
+                      </>
+                    }
                     secondary={review.review}
                   />
                 </ListItem>

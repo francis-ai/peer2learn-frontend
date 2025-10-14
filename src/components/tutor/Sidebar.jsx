@@ -20,6 +20,7 @@ import {
   Settings,
   Logout,
   Mail
+  
 } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/images/peer2learn.png';
@@ -68,7 +69,7 @@ const TutorSidebar = ({ open, onClose, isMobile }) => {
         sx={{ 
           px: 3, 
           py: 4, 
-          backgroundColor: '#eaeaeaff', 
+          backgroundColor: '#000', 
           display: { xs: 'none', md: 'flex' }, // Hide on mobile, show on desktop
           alignItems: 'center'
         }}

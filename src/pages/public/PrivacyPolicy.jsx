@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Paper,
-  Button,
   Avatar,
   List,
   ListItem,
@@ -61,7 +60,7 @@ export default function Privacy() {
           Privacy Policy
         </Typography>
         <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 800, mx: 'auto' }}>
-          Last updated: July 08, 2025. We're committed to protecting your personal information.
+          Last updated: October 14, 2025. We're committed to protecting your personal information.
         </Typography>
       </Box>
 
@@ -70,8 +69,8 @@ export default function Privacy() {
           Our Commitment to Your Privacy
         </Typography>
         <Typography paragraph>
-          At Edmoss, we take your privacy seriously. This Privacy Policy explains how we collect, 
-          use, disclose, and safeguard your information when you use our e-learning platform.
+          At Peer2Learn, we take your privacy seriously. This Privacy Policy explains how we collect, 
+          use, disclose, and safeguard your information when you use our learning platform.
         </Typography>
         <Typography paragraph>
           Please read this privacy policy carefully. By using our platform, you agree to the 
@@ -107,17 +106,17 @@ export default function Privacy() {
         <Box component="ul" sx={{ pl: 3, mb: 3, '& li': { mb: 1.5 } }}>
           <li>
             <Typography>
-              <strong>Personal Data:</strong> Name, email address, phone number, payment information
+              <strong>Personal Data:</strong> Name, email address, phone number, and payment details.
             </Typography>
           </li>
           <li>
             <Typography>
-              <strong>Usage Data:</strong> How you interact with our platform, course progress
+              <strong>Usage Data:</strong> How you interact with our platform, including course progress and preferences.
             </Typography>
           </li>
           <li>
             <Typography>
-              <strong>Technical Data:</strong> IP address, browser type, device information
+              <strong>Technical Data:</strong> IP address, browser type, device details, and cookies.
             </Typography>
           </li>
         </Box>
@@ -132,13 +131,12 @@ export default function Privacy() {
         </Typography>
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
           {[
-            "To provide and maintain our service",
-            "To notify you about changes to our service",
-            "To allow you to participate in interactive features",
-            "To provide customer support",
-            "To gather analysis or valuable information",
-            "To monitor the usage of our service",
-            "To detect, prevent and address technical issues"
+            "To provide and maintain our services",
+            "To notify you about updates or changes to our platform",
+            "To personalize your experience and recommend courses",
+            "To process transactions and manage your account",
+            "To improve our platform and customer experience",
+            "To detect, prevent, and address technical or security issues"
           ].map((item, index) => (
             <ListItem key={index} sx={{ py: 0.5 }}>
               <ListItemIcon sx={{ minWidth: 32 }}>
@@ -150,6 +148,32 @@ export default function Privacy() {
         </List>
       </Box>
 
+      <Box sx={{ mb: 6 }}>
+        <Typography variant="h4" gutterBottom>
+          Children's Privacy
+        </Typography>
+        <Typography paragraph>
+          Peer2Learn is committed to protecting the privacy of minors. We require parental or guardian
+          consent for users under the age of 18. Personal data from minors is collected only with verified
+          consent and used strictly for educational purposes.
+        </Typography>
+        <Typography paragraph>
+          Parents or guardians may review or request deletion of their child’s information by contacting 
+          our support team.
+        </Typography>
+      </Box>
+
+      <Box sx={{ mb: 6 }}>
+        <Typography variant="h4" gutterBottom>
+          Data Retention
+        </Typography>
+        <Typography paragraph>
+          We retain your personal data only as long as necessary to provide our services, comply with 
+          legal obligations, resolve disputes, and enforce our agreements. Once no longer needed, data 
+          is securely deleted or anonymized.
+        </Typography>
+      </Box>
+
       <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
         <Typography variant="h5" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
           <MailIcon color="primary" sx={{ mr: 1 }} />
@@ -159,8 +183,7 @@ export default function Privacy() {
           If you have any questions about this Privacy Policy, please contact us:
         </Typography>
         <Box sx={{ '& > *': { mr: 2, mb: 2 } }}>
-          <Button variant="contained">Email Privacy Team</Button>
-          <Button variant="outlined">Request Data Deletion</Button>
+          <Typography color="primary">support@peer2learn.com</Typography>
         </Box>
       </Paper>
     </Container>

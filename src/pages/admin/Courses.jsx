@@ -20,12 +20,16 @@ import {
   DialogActions,
   IconButton,
   Snackbar,
-  Alert
+  Alert,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -41,7 +45,9 @@ export default function Courses() {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const [formData, setFormData] = useState({ name: '', description: '' });
+  const [formData, setFormData] = useState({ name: '', description: '', category: '' });
+
+  const categories = ['Language', 'Academics', 'Tech'];
 
   useEffect(() => {
     fetchCourses();
@@ -58,7 +64,7 @@ export default function Courses() {
   };
 
   const handleOpenAdd = () => {
-    setFormData({ name: '', description: '' });
+    setFormData({ name: '', description: '', category: '' });
     setOpenAddModal(true);
   };
 
@@ -67,7 +73,7 @@ export default function Courses() {
       const res = await fetch(`${BASE_URL}/api/admin/add-course`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -83,7 +89,11 @@ export default function Courses() {
 
   const handleOpenEdit = (course) => {
     setSelectedCourse(course);
-    setFormData({ name: course.name, description: course.description });
+    setFormData({
+      name: course.name,
+      description: course.description,
+      category: course.category,
+    });
     setOpenEditModal(true);
   };
 
@@ -92,7 +102,7 @@ export default function Courses() {
       const res = await fetch(`${BASE_URL}/api/admin/edit-course/${selectedCourse.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -114,7 +124,7 @@ export default function Courses() {
   const handleDeleteCourse = async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/admin/delete-course/${selectedCourse.id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       const data = await res.json();
@@ -136,7 +146,12 @@ export default function Courses() {
         Manage Courses
       </Typography>
 
-      <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenAdd} sx={{ mb: 2 }}>
+      <Button
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={handleOpenAdd}
+        sx={{ mb: 2 }}
+      >
         Add New Course
       </Button>
 
@@ -148,6 +163,7 @@ export default function Courses() {
                 <TableRow>
                   <TableCell>Title</TableCell>
                   <TableCell>Description</TableCell>
+                  <TableCell>Category</TableCell>
                   <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -158,6 +174,7 @@ export default function Courses() {
                     <TableRow key={course.id} hover>
                       <TableCell>{course.name}</TableCell>
                       <TableCell>{course.description}</TableCell>
+                      <TableCell>{course.category}</TableCell>
                       <TableCell align="right">
                         <IconButton color="primary" onClick={() => handleOpenEdit(course)}>
                           <EditIcon />
@@ -184,7 +201,13 @@ export default function Courses() {
       </Card>
 
       {/* Add/Edit Modal */}
-      <Dialog open={openAddModal || openEditModal} onClose={() => { setOpenAddModal(false); setOpenEditModal(false); }}>
+      <Dialog
+        open={openAddModal || openEditModal}
+        onClose={() => {
+          setOpenAddModal(false);
+          setOpenEditModal(false);
+        }}
+      >
         <DialogTitle>{openAddModal ? 'Add New Course' : 'Edit Course'}</DialogTitle>
         <DialogContent>
           <TextField
@@ -203,10 +226,36 @@ export default function Courses() {
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
+
+          {/* Category Dropdown */}
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Category</InputLabel>
+            <Select
+              value={formData.category}
+              label="Category"
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            >
+              {categories.map((cat) => (
+                <MenuItem key={cat} value={cat}>
+                  {cat}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { setOpenAddModal(false); setOpenEditModal(false); }}>Cancel</Button>
-          <Button onClick={openAddModal ? handleAddCourse : handleEditCourse} variant="contained">
+          <Button
+            onClick={() => {
+              setOpenAddModal(false);
+              setOpenEditModal(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={openAddModal ? handleAddCourse : handleEditCourse}
+            variant="contained"
+          >
             {openAddModal ? 'Add' : 'Update'}
           </Button>
         </DialogActions>
@@ -233,7 +282,12 @@ export default function Courses() {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }} variant="filled">
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+          variant="filled"
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>

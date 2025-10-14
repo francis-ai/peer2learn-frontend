@@ -130,7 +130,7 @@ export default function Earnings() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ py: 3 }}>
       <Typography variant="h5" fontWeight="bold" sx={{ mb: 3 }}>
         Earnings
       </Typography>
@@ -144,7 +144,7 @@ export default function Earnings() {
           {/* Summary Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} md={4}>
-              <Card>
+              <Card sx={{width: {md: '240px', xs: '290px'}}}>
                 <CardContent>
                   <Typography color="text.secondary">Total Earnings</Typography>
                   <Typography variant="h5" fontWeight="bold">
@@ -155,7 +155,7 @@ export default function Earnings() {
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <Card>
+              <Card sx={{width: {md: '240px', xs: '290px'}}}>
                 <CardContent>
                   <Typography color="text.secondary">Available Balance</Typography>
                   <Typography variant="h5" fontWeight="bold">
@@ -166,7 +166,7 @@ export default function Earnings() {
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <Card>
+              <Card sx={{width: {md: '240px', xs: '290px'}}}>
                 <CardContent>
                   <Typography color="text.secondary">Total Withdrawn</Typography>
                   <Typography variant="h5" fontWeight="bold">
@@ -177,7 +177,7 @@ export default function Earnings() {
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <Card>
+              <Card sx={{width: {md: '240px', xs: '290px'}}}>
                 <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
                   <WithdrawIcon color="secondary" sx={{ fontSize: 40, mr: 2 }} />
                   <Box>

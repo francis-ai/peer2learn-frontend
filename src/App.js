@@ -14,6 +14,7 @@ import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import VerifyEmail from './pages/auth/VerifyEmail';
+import Logout from './pages/student/Logout';
 
 // Public Pages
 import Home from './pages/public/Home';
@@ -33,7 +34,8 @@ import Enroll from './pages/student/EnrollForm';
 import Schedule from './pages/student/Schedule';
 import Assignment from './pages/student/Assignment';
 import SocialLoginSuccess from './pages/SocialLoginSuccess';
-import Logout from './pages/student/Logout';
+import PaymentSuccess from './pages/student/PaymentSuccess';
+
 
 
 import TutorApp from './TutorApp';
@@ -48,7 +50,7 @@ function App() {
         <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
         <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
         <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
-        <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
+        <Route path="/reset-password/:token" element={<PublicLayout><ResetPassword /></PublicLayout>} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/logout" element={<PublicLayout><Logout /></PublicLayout>} />
 
@@ -58,6 +60,7 @@ function App() {
         <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
         <Route path="/help" element={<PublicLayout><Help /></PublicLayout>} />
         <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
+        <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
         <Route path="/social-login-success" element={<PublicLayout><SocialLoginSuccess /></PublicLayout>} />
 
         {/* Dashboards without Navbar/Footer (can have their own layout later) */}

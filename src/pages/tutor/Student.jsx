@@ -14,7 +14,6 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   ArrowBack as BackIcon,
-  Add as AddIcon,
   Check as CheckIcon,
   Close as CloseIcon
 } from '@mui/icons-material';
@@ -202,25 +201,69 @@ export default function MyStudents() {
 
   if (selectedStudent) {
     return (
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ py: 2 }}>
         <Button startIcon={<BackIcon />} onClick={handleBackToList} sx={{ mb: 2 }}>
           Back to Students
         </Button>
 
         <Card sx={{ mb: 3 }}>
           <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-              <Avatar sx={{ width: 80, height: 80, mr: 3 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: { xs: 'flex-start', sm: 'center' }, // stack vertically on mobile
+                flexDirection: { xs: 'column', sm: 'row' },     // column on mobile, row on larger screens
+                mb: 3,
+                textAlign: { xs: 'center', sm: 'left' },       // center text on mobile
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: { xs: 60, sm: 80 }, // smaller avatar on mobile
+                  height: { xs: 60, sm: 80 },
+                  mr: { xs: 0, sm: 3 },
+                  mb: { xs: 2, sm: 0 },      // spacing below avatar on mobile
+                  mx: { xs: 'auto', sm: 0 }, // center avatar on mobile
+                }}
+              >
                 {selectedStudent.name.charAt(0)}
               </Avatar>
+
               <Box>
-                <Typography variant="h4" fontWeight="bold">
+                <Typography
+                  variant="h4"
+                  fontWeight="bold"
+                  sx={{
+                    fontSize: { xs: '1.5rem', sm: '2rem' }, // smaller heading on mobile
+                    mb: 1,
+                  }}
+                >
                   {selectedStudent.name}
                 </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 1 }}>
-                  <Chip icon={<EmailIcon />} label={selectedStudent.email} />
-                  <Chip icon={<PhoneIcon />} label={selectedStudent.phone} />
-                  <Chip icon={<DateIcon />} label={`Joined: ${selectedStudent.joinDate}`} />
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 1.5,
+                    justifyContent: { xs: 'center', sm: 'flex-start' }, // center chips on mobile
+                  }}
+                >
+                  <Chip
+                    icon={<EmailIcon />}
+                    label={selectedStudent.email}
+                    sx={{ fontSize: { xs: '0.75rem', sm: '0.9rem' }, px: { xs: 1, sm: 1.5 } }}
+                  />
+                  <Chip
+                    icon={<PhoneIcon />}
+                    label={selectedStudent.phone}
+                    sx={{ fontSize: { xs: '0.75rem', sm: '0.9rem' }, px: { xs: 1, sm: 1.5 } }}
+                  />
+                  <Chip
+                    icon={<DateIcon />}
+                    label={`Joined: ${selectedStudent.joinDate}`}
+                    sx={{ fontSize: { xs: '0.75rem', sm: '0.9rem' }, px: { xs: 1, sm: 1.5 } }}
+                  />
                 </Box>
               </Box>
             </Box>
@@ -300,19 +343,34 @@ export default function MyStudents() {
                     </Table>
                   </TableContainer>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      mb: 3,
+                      flexDirection: { xs: 'column', sm: 'row' }, // optional: stack on mobile if space is tight
+                    }}
+                  >
                     <TextField
                       placeholder="Add new topic"
                       value={newTopic}
                       onChange={(e) => setNewTopic(e.target.value)}
                       size="small"
-                      sx={{ flexGrow: 1 }}
+                      sx={{ flexGrow: 1, width: { xs: '100%', sm: 'auto' } }} // full width on mobile
                     />
+
                     <Button
                       variant="contained"
-                      startIcon={<AddIcon />}
                       onClick={() => handleAddTopic(course.enrollment_id)}
                       disabled={!newTopic.trim()}
+                      sx={{
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' }, // smaller text on mobile
+                        px: { xs: 1.5, sm: 3 },                      // less horizontal padding on mobile
+                        py: { xs: 0.6, sm: 1 },                      // slightly shorter height on mobile
+                        minWidth: { xs: '90px', sm: '120px' },       // smaller width on mobile
+                        width: { xs: '100%', sm: 'auto' }            // optional: full-width button on mobile
+                      }}
                     >
                       Add Topic
                     </Button>
@@ -360,7 +418,7 @@ export default function MyStudents() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ py: 3 }}>
       <Typography variant="h4" fontWeight="bold" sx={{ mb: 3 }}>
         My Students
       </Typography>
@@ -368,7 +426,7 @@ export default function MyStudents() {
       <Grid container spacing={3}>
         {students.map((student) => (
           <Grid item xs={12} sm={6} md={4} key={student.id}>
-            <Card>
+            <Card sx={{ width: {md: '450px', xs: '100%'} }}> 
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Avatar sx={{ width: 50, height: 50, mr: 2 }}>

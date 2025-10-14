@@ -5,16 +5,31 @@ const AuthContext = createContext();
 export const StudentAuthProvider = ({ children }) => {
   const [student, setStudentState] = useState(null);
 
-  // Load student from localStorage
+  // Load student from localStorage safely
   useEffect(() => {
-    const storedStudent = localStorage.getItem("student");
-    if (storedStudent) setStudentState(JSON.parse(storedStudent));
+    try {
+      const storedStudent = localStorage.getItem("student");
+
+      if (storedStudent && storedStudent !== "undefined" && storedStudent !== "null") {
+        const parsed = JSON.parse(storedStudent);
+        setStudentState(parsed);
+      } else {
+        localStorage.removeItem("student"); // clean bad value
+      }
+    } catch (err) {
+      console.error("Failed to parse student from localStorage:", err);
+      localStorage.removeItem("student"); // clean up if corrupted
+    }
   }, []);
 
   // Wrap setStudent to also save to localStorage
   const setStudent = (studentData) => {
     setStudentState(studentData);
-    localStorage.setItem("student", JSON.stringify(studentData));
+    if (studentData) {
+      localStorage.setItem("student", JSON.stringify(studentData));
+    } else {
+      localStorage.removeItem("student");
+    }
   };
 
   // Fetch full student profile by ID

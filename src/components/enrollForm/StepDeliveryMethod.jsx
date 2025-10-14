@@ -5,32 +5,27 @@ import {
   Grid,
   Card,
   CardContent,
+  CardMedia,
   Button,
 } from "@mui/material";
 import { Computer, LocationOn } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
-export default function StepDeliveryMethod({ formData, setFormData, offices }) {
-  const filteredOffices = offices.filter(
-    (office) =>
-      formData.location === "Online" ||
-      office.location?.toLowerCase() === formData.location?.toLowerCase()
-  );
-
-  const hasNoOffices = formData.location !== "Online" && filteredOffices.length === 0;
-
+export default function StepDeliveryMethod({ formData, setFormData, offices, BASE_URL }) {
   return (
     <Box>
+      {/* Step Title */}
       <Box sx={{ textAlign: "center" }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" fontWeight="bold" gutterBottom>
           How would you like to take this course?
         </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Choose your preferred learning option below
+        </Typography>
 
-        <Grid
-          container
-          spacing={2}
-          sx={{ mt: 3, display: "flex", justifyContent: "space-around" }}
-        >
-          <Grid item xs={6}>
+        {/* Delivery Option Buttons */}
+        <Grid container spacing={2} sx={{ mt: 3, justifyContent: "center" }}>
+          <Grid item xs={6} sm={4} md={3}>
             <Button
               fullWidth
               variant={formData.deliveryMethod === "online" ? "contained" : "outlined"}
@@ -39,22 +34,37 @@ export default function StepDeliveryMethod({ formData, setFormData, offices }) {
                 setFormData((prev) => ({
                   ...prev,
                   deliveryMethod: "online",
-                  officeId: "", // clear any office selection
+                  officeId: "", // clear office selection
                 }))
               }
-              sx={{ py: 3 }}
+              sx={{
+                py: 3,
+                fontWeight: "bold",
+                borderRadius: 3,
+                boxShadow: formData.deliveryMethod === "online" ? 4 : "none",
+              }}
             >
               Online
             </Button>
           </Grid>
-          <Grid item xs={6}>
+
+          <Grid item xs={6} sm={4} md={3}>
             <Button
               fullWidth
               variant={formData.deliveryMethod === "onsite" ? "contained" : "outlined"}
               startIcon={<LocationOn />}
-              onClick={() => setFormData((prev) => ({ ...prev, deliveryMethod: "onsite" }))}
-              sx={{ py: 3 }}
-              disabled={formData.location === "Online"}
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  deliveryMethod: "onsite",
+                }))
+              }
+              sx={{
+                py: 3,
+                fontWeight: "bold",
+                borderRadius: 3,
+                boxShadow: formData.deliveryMethod === "onsite" ? 4 : "none",
+              }}
             >
               On-Site
             </Button>
@@ -62,102 +72,82 @@ export default function StepDeliveryMethod({ formData, setFormData, offices }) {
         </Grid>
       </Box>
 
+      {/* On-Site Selection Section */}
       {formData.deliveryMethod === "onsite" && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="subtitle1" gutterBottom>
+        <Box sx={{ mt: 5 }}>
+          <Typography variant="h6" gutterBottom fontWeight="bold" textAlign="center">
             Select Your Nearest Cohub Location
           </Typography>
+          <Typography variant="body2" color="text.secondary" textAlign="center" mb={3}>
+            Tap a location to continue
+          </Typography>
 
-          {hasNoOffices ? (
-            <>
-              <Typography variant="body1" color="error" sx={{ mb: 2 }}>
-                No Cohub Available in the location you selected, you can choose from any of our
-                registered Cohubs:
-              </Typography>
-
-              <Grid container spacing={2}>
-                {offices.map((office) => {
-                  const isSelected = formData.officeId === office.id;
-                  return (
-                    <Grid item xs={12} sm={6} md={4} key={office.id}>
-                      <Card
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            officeId: office.id,
-                          }))
-                        }
-                        sx={{
-                          p: 2,
-                          cursor: "pointer",
-                          border: isSelected ? "2px solid #1976d2" : "1px solid #ddd",
-                          boxShadow: isSelected ? 6 : 2,
-                          transition: "all 0.3s ease",
-                          backgroundColor: isSelected ? "#e3f2fd" : "#fff",
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="h6" gutterBottom>
-                            {office.office_name}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {office.address}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {office.location}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            📞 {office.phone_number}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </>
-          ) : (
-            <Grid container spacing={2}>
-              {filteredOffices.map((office) => {
-                const isSelected = formData.officeId === office.id;
-                return (
-                  <Grid item xs={12} sm={6} md={4} key={office.id}>
+          <Grid container spacing={3}>
+            {offices.map((cohub) => {
+              const isSelected = formData.officeId === cohub.id;
+              return (
+                <Grid item xs={12} sm={6} md={4} key={cohub.id}>
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <Card
                       onClick={() =>
                         setFormData((prev) => ({
                           ...prev,
-                          officeId: office.id,
+                          officeId: cohub.id,
                         }))
                       }
                       sx={{
-                        p: 2,
                         cursor: "pointer",
-                        border: isSelected ? "2px solid #1976d2" : "1px solid #ddd",
+                        borderRadius: 3,
+                        overflow: "hidden",
                         boxShadow: isSelected ? 6 : 2,
+                        border: isSelected ? "2px solid #1976d2" : "1px solid #e0e0e0",
+                        transform: isSelected ? "scale(1.02)" : "scale(1)",
                         transition: "all 0.3s ease",
                         backgroundColor: isSelected ? "#e3f2fd" : "#fff",
                       }}
                     >
-                      <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                          {office.office_name}
+                      <CardMedia
+                        component="img"
+                        height="180"
+                        image={
+                          cohub.office_images?.length
+                            ? `${BASE_URL}/uploads/cohub/${cohub.office_images[0]}`
+                            : "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&h=400&fit=crop"
+                        }
+                        alt={cohub.name}
+                        sx={{ objectFit: "cover" }}
+                      />
+                      <CardContent sx={{ textAlign: "center" }}>
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          sx={{ mb: 0.5, color: "#1976d2" }}
+                        >
+                          {cohub.office_name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {office.address}
+                          {cohub.address}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {office.location}
+                          {cohub.location}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          📞 {office.phone_number}
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mt: 0.5 }}
+                        >
+                          📞 {cohub.phone_number}
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Grid>
-                );
-              })}
-            </Grid>
-          )}
+                  </motion.div>
+                </Grid>
+              );
+            })}
+          </Grid>
         </Box>
       )}
     </Box>

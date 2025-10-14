@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, Container } from '@mui/material';
+import { Box, Typography, Grid, Container, useTheme } from '@mui/material';
 import { 
   PeopleAlt, 
   Payments, 
@@ -12,6 +12,8 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const Services = () => {
+  const theme = useTheme();
+
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -87,7 +89,7 @@ const Services = () => {
             fontWeight: 700,
             textAlign: 'center',
             mb: 2,
-            color: '#1a237e'
+            color: theme.palette.text.primary,
           }}
           data-aos="fade-down"
         >
@@ -124,13 +126,11 @@ const Services = () => {
                   borderRadius: '12px',
                   p: 3,
                   height: '85%',
-                 
+                  mx: 'auto',
                   width: {
-                    xs: '270px',
+                    xs: '80%',
                     sm: '320px'
                   },
-                //   mt: , 
-                //   transition: 'transform 0.3s, box-shadow 0.3s',
                   boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
                   '&:hover': {
                     transform: 'translateY(-10px)',

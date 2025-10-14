@@ -8,8 +8,6 @@ import {
   Chip,
   Stack,
   Fade,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CampaignIcon from "@mui/icons-material/Campaign";
@@ -22,8 +20,6 @@ const AnnouncementBanner = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const contentRef = useRef(null);
   const containerRef = useRef(null);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const fetchAnnouncement = useCallback(async () => {
     try {
@@ -41,7 +37,7 @@ const AnnouncementBanner = () => {
   }, [fetchAnnouncement]);
 
   useEffect(() => {
-    if (!isMobile || !announcement || !contentRef.current || !containerRef.current) return;
+    if (!announcement || !contentRef.current || !containerRef.current) return;
 
     const contentWidth = contentRef.current.scrollWidth;
     const containerWidth = containerRef.current.offsetWidth;
@@ -49,21 +45,19 @@ const AnnouncementBanner = () => {
     if (contentWidth <= containerWidth) return;
 
     const ticker = setInterval(() => {
-      setScrollPosition(prev => {
-        const newPosition = prev + 0.5; // Slower scroll speed
+      setScrollPosition((prev) => {
+        const newPosition = prev + 0.5;
         if (newPosition >= contentWidth) {
-          return -containerWidth; // Reset to start with smooth transition
+          return -containerWidth;
         }
         return newPosition;
       });
-    }, 25); // Smoother animation
+    }, 25);
 
     return () => clearInterval(ticker);
-  }, [isMobile, announcement]);
+  }, [announcement]);
 
-  const handleClose = () => {
-    setHidden(true);
-  };
+  const handleClose = () => setHidden(true);
 
   if (!announcement) return null;
 
@@ -72,18 +66,20 @@ const AnnouncementBanner = () => {
       <Paper
         elevation={0}
         sx={{
-          width: "96%",
+          width: "100%",
           px: { xs: 1, sm: 4 },
           py: { xs: 1, sm: 1.5 },
           bgcolor: "primary.main",
           color: "white",
-          borderRadius: 0,
           borderBottom: "1px solid",
           borderColor: "primary.dark",
           overflow: "hidden",
-          position: "sticky", // ✅ This makes it stick while scrolling
-          top: "75px",        // ✅ Adjust based on your navbar height
-          zIndex: 999,        // ✅ Make sure it's above page content but below navbar
+          position: "sticky",
+          top: "75px",
+          zIndex: 999,
+          left: 0,
+          right: 0,
+          boxSizing: "border-box",
         }}
         ref={containerRef}
       >
@@ -91,45 +87,45 @@ const AnnouncementBanner = () => {
           sx={{
             display: "flex",
             alignItems: "center",
-            maxWidth: "1200px",
+            justifyContent: "space-between",
+            maxWidth: "100%",
             margin: "0 auto",
             position: "relative",
             width: "100%",
+            overflow: "hidden",
           }}
         >
-          {/* Icon + Label - Hidden on mobile */}
-          {!isMobile && (
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={1}
+          {/* Icon + Label */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{
+              mr: 2,
+              minWidth: "140px",
+              flexShrink: 0,
+            }}
+          >
+            <CampaignIcon fontSize="small" sx={{ color: "primary.light" }} />
+            <Chip
+              label="Announcement"
+              size="small"
               sx={{
-                mr: 2,
-                minWidth: "140px",
-                flexShrink: 0,
+                fontWeight: "bold",
+                bgcolor: "rgba(255,255,255,0.15)",
+                color: "white",
+                fontSize: "0.7rem",
+                height: "22px",
               }}
-            >
-              <CampaignIcon fontSize="small" sx={{ color: "primary.light" }} />
-              <Chip
-                label="Announcement"
-                size="small"
-                sx={{
-                  fontWeight: "bold",
-                  bgcolor: "rgba(255,255,255,0.15)",
-                  color: "white",
-                  fontSize: "0.7rem",
-                  height: "22px",
-                }}
-              />
-            </Stack>
-          )}
+            />
+          </Stack>
 
-          {/* Text Content */}
-          <Box 
-            sx={{ 
+          {/* Scrolling Text */}
+          <Box
+            sx={{
               flex: 1,
               overflow: "hidden",
-              whiteSpace: isMobile ? "nowrap" : "normal",
+              whiteSpace: "nowrap",
               width: "100%",
             }}
           >
@@ -137,9 +133,9 @@ const AnnouncementBanner = () => {
               ref={contentRef}
               sx={{
                 display: "inline-block",
-                transform: isMobile ? `translateX(-${scrollPosition}px)` : "none",
-                transition: isMobile ? "transform 0.1s linear" : "none",
-                pr: isMobile ? 2 : 0,
+                transform: `translateX(-${scrollPosition}px)`,
+                transition: "transform 0.1s linear",
+                pr: 2,
               }}
             >
               <Typography
@@ -177,9 +173,9 @@ const AnnouncementBanner = () => {
             size="small"
             sx={{
               color: "rgba(255,255,255,0.8)",
-              "&:hover": { 
+              "&:hover": {
                 bgcolor: "primary.dark",
-                color: "white"
+                color: "white",
               },
               ml: 1,
               flexShrink: 0,

@@ -7,9 +7,6 @@ import {
   ListItemText, 
   Divider, 
   Toolbar,
-  useTheme,
-  Avatar,
-  Typography,
   Box,
   styled
 } from '@mui/material';
@@ -29,6 +26,7 @@ import {
   RequestPage,
 } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from '../../assets/images/peer2learn.png';
 
 const SidebarDrawer = styled(Drawer)(({ theme }) => ({
   width: 280,
@@ -45,6 +43,7 @@ const SidebarDrawer = styled(Drawer)(({ theme }) => ({
 const menuItems = [
   { text: 'Dashboard', icon: <Dashboard />, path: '/admin/' },
   { text: 'Manage Students', icon: <People />, path: '/admin/students' },
+  { text: 'Enrollments', icon: <Class />, path: '/admin/enrollments' },
   { text: 'Manage Tutors', icon: <School />, path: '/admin/tutors' },
   { text: 'Manage Course', icon: <Book />, path: '/admin/courses' },
   { text: 'Manage Offices', icon: <AccountBalance />, path: '/admin/offices' },
@@ -58,7 +57,6 @@ const menuItems = [
 ];
 
 export default function AdminSidebar({ open, onClose, isMobile }) {
-  const theme = useTheme();
    const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -78,25 +76,29 @@ export default function AdminSidebar({ open, onClose, isMobile }) {
         sx={{ 
           px: 3, 
           py: 4, 
-          backgroundColor: 'grey', 
+          backgroundColor: '#000', 
           display: { xs: 'none', md: 'flex' }, // Hide on mobile, show on desktop
           alignItems: 'center'
         }}
       >
-        <Box display="flex" alignItems="center">
-          <Avatar 
-            sx={{ 
-              width: 40, 
-              height: 40, 
-              mr: 2,
-              bgcolor: theme.palette.primary.main 
-            }}
-          >
-            A
-          </Avatar>
-          <Typography variant="h6" fontWeight="bold">
-            Admin Panel
-          </Typography>
+        {/* Logo Section */}
+        <Box 
+          component={Link} 
+          to="/tutor/" 
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            gap: 1,
+            zIndex: 10,
+            mx: "auto"
+          }}
+        >
+          <img 
+            src={Logo} 
+            alt="Logo" 
+            style={{ height: '90px', objectFit: 'contain', mx: 'auto' }} 
+          />
         </Box>
       </Toolbar>
 

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, useTheme } from "@mui/material";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function VideoPlayer() {
   const [videoUrl, setVideoUrl] = useState("");
+  const theme = useTheme();
 
   useEffect(() => {
     fetchVideo();
@@ -35,13 +36,14 @@ export default function VideoPlayer() {
     <Box sx={{ mt: 4, textAlign: "center", p: 1 }}>
       {/* <Container maxWidth="lg"> */}
         <Typography 
-          variant="h2" 
-          sx={{
-            fontSize: '2.5rem',
+          variant="h3" 
+          sx={{ 
             fontWeight: 700,
-            textAlign: 'center',
             mb: 2,
-            color: '#1a237e'
+            color: theme.palette.text.primary,
+            [theme.breakpoints.down('sm')]: {
+              fontSize: '1.5rem'
+            }
           }}
           data-aos="fade-down"
         >

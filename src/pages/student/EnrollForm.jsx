@@ -22,20 +22,21 @@ import StepTutorSelect from "../../components/enrollForm/StepTutorSelect";
 import StepPayment from "../../components/enrollForm/StepPayment";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || "pk_test_5624a1b37a80ce2f38d7d2da8e5d02a2a405d8de";
+const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY ||
+  "pk_live_e2c76d414fdb6b5819fb2d8489e22872a1e64d9d";
 
 export default function EnrollForm() {
   const navigate = useNavigate();
   const { student } = useAuth();
+
   const [activeStep, setActiveStep] = useState(0);
   const [courses, setCourses] = useState([]);
-  const [locations, setLocations] = useState([]);
   const [tutorCourses, setTutorCourses] = useState([]);
   const [offices, setOffices] = useState([]);
 
   const [formData, setFormData] = useState({
     course: "",
-    location: "",
+    location: null, // will send null if online or removed
     deliveryMethod: "", // 'online' | 'onsite'
     officeId: "",
     selectedTutor: null, // tutor_course_id
@@ -48,20 +49,20 @@ export default function EnrollForm() {
     message: "",
     severity: "success",
   });
-  const handleSnackbarClose = () => setSnackbar((s) => ({ ...s, open: false }));
+
+  const handleSnackbarClose = () =>
+    setSnackbar((s) => ({ ...s, open: false }));
 
   // Fetch initial data
   useEffect(() => {
     const fetchInitial = async () => {
       try {
-        const [courseRes, locationRes, tutorCourseRes, officesRes] = await Promise.all([
+        const [courseRes, tutorCourseRes, officesRes] = await Promise.all([
           axios.get(`${BASE_URL}/api/view/courses`),
-          axios.get(`${BASE_URL}/api/view/locations`),
           axios.get(`${BASE_URL}/api/view/all-tutor-courses`),
           axios.get(`${BASE_URL}/api/view/offices`),
         ]);
         setCourses(courseRes.data || []);
-        setLocations(locationRes.data || []);
         setTutorCourses(tutorCourseRes.data || []);
         setOffices(officesRes.data || []);
       } catch (err) {
@@ -76,23 +77,13 @@ export default function EnrollForm() {
     if (BASE_URL) fetchInitial();
   }, []);
 
-  const steps = ["Course & Location", "Delivery Method", "Select Tutor", "Payment"];
+  const steps = ["Course", "Delivery Method", "Select Tutor", "Payment"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
-      // reset related fields if needed
       if (name === "course") {
-        return { ...prev, course: value, selectedTutor: null };
-      }
-      if (name === "location") {
-        // if user switches to 'Online', clear delivery method office if it was 'onsite'
-        const next = { ...prev, location: value };
-        if (value === "Online" && next.deliveryMethod === "onsite") {
-          next.deliveryMethod = "";
-          next.officeId = "";
-        }
-        return next;
+        return { ...prev, course: value, selectedTutor: null }; // reset tutor
       }
       if (name === "paymentPlan") return { ...prev, paymentPlan: value };
       return { ...prev, [name]: value };
@@ -104,19 +95,21 @@ export default function EnrollForm() {
     [courses, formData.course]
   );
 
-  // Tutors filtered by course + location (location filter only applies if not 'Online')
+  // Tutors filtered only by selected course
   const filteredTutors = useMemo(() => {
     if (!selectedCourseObject) return [];
     return tutorCourses.filter(
       (t) =>
-        selectedCourseObject?.name?.toLowerCase() === t.course_name?.toLowerCase() &&
-        (formData.location === "online" ||
-          t.location?.toLowerCase() === formData.location?.toLowerCase())
+        selectedCourseObject?.name?.toLowerCase() ===
+        t.course_name?.toLowerCase()
     );
-  }, [tutorCourses, selectedCourseObject, formData.location]);
+  }, [tutorCourses, selectedCourseObject]);
 
   const selectedTutorCourse = useMemo(
-    () => tutorCourses.find((t) => t.tutor_course_id === formData.selectedTutor),
+    () =>
+      tutorCourses.find(
+        (t) => t.tutor_course_id === formData.selectedTutor
+      ),
     [tutorCourses, formData.selectedTutor]
   );
 
@@ -130,19 +123,27 @@ export default function EnrollForm() {
   }, [selectedTutorCourse]);
 
   const getAdjustedPrice = (price) =>
-    formData.deliveryMethod === "online" ? Math.floor(Number(price || 0) / 2) : Number(price || 0);
+    formData.deliveryMethod === "online"
+      ? Math.floor(Number(price || 0) / 2)
+      : Number(price || 0);
 
-  const fullPaymentAmount = selectedCourse ? getAdjustedPrice(selectedCourse.price) : 0;
+  const fullPaymentAmount = selectedCourse
+    ? getAdjustedPrice(selectedCourse.price)
+    : 0;
 
   const installmentAmount = selectedCourse
     ? fullPaymentAmount < 80000
-      ? Math.floor(fullPaymentAmount / 2) // If price < 80k, take half
-      : Math.max(80000, Math.floor(fullPaymentAmount * 0.3)) // Otherwise 30% with 80k min
+      ? Math.floor(fullPaymentAmount / 2)
+      : Math.max(80000, Math.floor(fullPaymentAmount * 0.3))
     : 80000;
 
   const handleNext = () => {
-    // enforce office selection if onsite at step 1 → going to step 2
-    if (activeStep === 1 && formData.deliveryMethod === "onsite" && !formData.officeId) {
+    // enforce office selection if onsite
+    if (
+      activeStep === 1 &&
+      formData.deliveryMethod === "onsite" &&
+      !formData.officeId
+    ) {
       setSnackbar({
         open: true,
         message: "Please select your preferred Cohub location.",
@@ -167,7 +168,11 @@ export default function EnrollForm() {
 
   return (
     <Box sx={{ maxWidth: "800px", mx: "auto", p: 3, mt: 12 }}>
-      <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 3 }}>
+      <Button
+        startIcon={<ArrowBack />}
+        onClick={() => navigate(-1)}
+        sx={{ mb: 3 }}
+      >
         Back to Classes
       </Button>
 
@@ -184,7 +189,6 @@ export default function EnrollForm() {
           {activeStep === 0 && (
             <StepCourseLocation
               courses={courses}
-              locations={locations}
               formData={formData}
               handleChange={handleChange}
             />
@@ -194,19 +198,20 @@ export default function EnrollForm() {
             <StepDeliveryMethod
               formData={formData}
               setFormData={setFormData}
-              offices={offices} // full list; component will filter and fallback
+              offices={offices}
             />
           )}
 
           {activeStep === 2 && (
             <StepTutorSelect
               tutors={filteredTutors}
-              allTutors={tutorCourses}   // 🔑 pass full tutor list here
+              allTutors={tutorCourses}
               formData={formData}
-              onSelectTutor={(id) => setFormData((p) => ({ ...p, selectedTutor: id }))}
+              onSelectTutor={(id) =>
+                setFormData((p) => ({ ...p, selectedTutor: id }))
+              }
             />
           )}
-
 
           {activeStep === 3 && selectedCourse && (
             <StepPayment
@@ -237,7 +242,7 @@ export default function EnrollForm() {
             variant="contained"
             onClick={handleNext}
             disabled={
-              (activeStep === 0 && (!formData.course || !formData.location)) ||
+              (activeStep === 0 && !formData.course) ||
               (activeStep === 1 && !formData.deliveryMethod) ||
               (activeStep === 2 && !formData.selectedTutor)
             }
@@ -254,7 +259,11 @@ export default function EnrollForm() {
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <MuiAlert onClose={handleSnackbarClose} severity={snackbar.severity} sx={{ width: "100%" }}>
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
           {snackbar.message}
         </MuiAlert>
       </Snackbar>

@@ -7,9 +7,6 @@ import {
   ListItemText, 
   Divider, 
   Toolbar,
-  useTheme,
-  Avatar,
-  Typography,
   Box,
   styled
 } from '@mui/material';
@@ -19,6 +16,7 @@ import {
   Logout,
 } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from '../../assets/images/peer2learn.png';
 
 const SidebarDrawer = styled(Drawer)(({ theme }) => ({
   width: 280,
@@ -36,10 +34,11 @@ const SidebarDrawer = styled(Drawer)(({ theme }) => ({
 const menuItems = [
   { text: 'Dashboard', icon: <Dashboard />, path: '/cohub' },
   { text: 'Our Users', icon: <Dashboard />, path: '/cohub/users' },
+  { text: 'Payments', icon: <Dashboard />, path: '/cohub/payments' },
+  { text: 'Withdrawals', icon: <Dashboard />, path: '/cohub/withdrawal' },
 ];
 
 const CohubSidebar = ({ open, onClose, isMobile }) => {
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -57,31 +56,35 @@ const CohubSidebar = ({ open, onClose, isMobile }) => {
       ModalProps={{ keepMounted: true }}
     >
       {/* Header - shows on desktop */}
-      <Toolbar 
-        sx={{ 
-          px: 3, 
-          py: 4, 
-          backgroundColor: 'grey', 
-          display: { xs: 'none', md: 'flex' },
-          alignItems: 'center'
-        }}
-      >
-        <Box display="flex" alignItems="center">
-          <Avatar 
-            sx={{ 
-              width: 40, 
-              height: 40, 
-              mr: 2,
-              bgcolor: theme.palette.primary.main 
+       <Toolbar 
+          sx={{ 
+            px: 3, 
+            py: 4, 
+            backgroundColor: '#000', 
+            display: { xs: 'none', md: 'flex' }, // Hide on mobile, show on desktop
+            alignItems: 'center'
+          }}
+        >
+          {/* Logo Section */}
+          <Box 
+            component={Link} 
+            to="/tutor/" 
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              textDecoration: 'none',
+              gap: 1,
+              zIndex: 10,
+              mx: "auto"
             }}
           >
-            C
-          </Avatar>
-          <Typography variant="h6" fontWeight="bold">
-            Cohub Admin
-          </Typography>
-        </Box>
-      </Toolbar>
+            <img 
+              src={Logo} 
+              alt="Logo" 
+              style={{ height: '90px', objectFit: 'contain', mx: 'auto' }} 
+            />
+          </Box>
+        </Toolbar>
 
       <Divider />
 

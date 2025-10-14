@@ -19,6 +19,8 @@ import ResetPassword from './pages/auth/cohub/ResetPassword';
 import Dashboard from './pages/cohub/Dashboard';
 import OurUser from './pages/cohub/OurUser'
 import Profile from './pages/cohub/Profile';
+import Payments from './pages/cohub/Payment';
+import Withdrawal from './pages/cohub/Withdrawal';
 
 const CohubApp = () => {
   return (
@@ -28,7 +30,7 @@ const CohubApp = () => {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
-        <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="reset-password/:token" element={<ResetPassword />} />
 
         {/* Protected Dashboard Routes */}
         <Route
@@ -40,6 +42,8 @@ const CohubApp = () => {
         >
           <Route index element={<Dashboard />} />
           <Route path="users" element={<OurUser />} />
+          <Route path="payments" element={<Payments />} />
+          <Route path="withdrawal" element={<Withdrawal />} />
           <Route path="profile-settings" element={<Profile />} />
         </Route>
       </Routes>

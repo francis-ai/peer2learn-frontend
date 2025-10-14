@@ -16,7 +16,7 @@ export default function Footer() {
               style={{ height: "70px", objectFit: "contain" }} 
             />
             <FooterText>
-              Connecting students with top tutors for effective peer-to-peer learning in managed locations.
+              Connecting students with top tutors for <br></br>effective peer-to-peer learning in managed locations.
             </FooterText>
           </Grid>
 
@@ -25,13 +25,16 @@ export default function Footer() {
           <Grid item xs={12} md={3}>
             <FooterHeading>Contact Us</FooterHeading>
             <FooterText>
-              <strong>Email:</strong> hello@edmoss.com
+              <strong>Email:</strong> support@peer2learn.com
             </FooterText>
             <FooterText>
-              <strong>Phone:</strong> +1 (555) 123-4567
+              <strong>Phone:</strong> +234 816 455 7305
             </FooterText>
             <FooterText>
-              <strong>Address:</strong> 123 Learning St, Edu City
+              <strong>Address(Lagos):</strong> No 38 Opebi road, Ikeja, Lagos.
+            </FooterText>
+            <FooterText>
+              <strong>Address(Abuja):</strong> Plot 104 Emmanuel Adiele Street, off Mike Akhigbe Way, Jabi, Abuja.
             </FooterText>
           </Grid>
 

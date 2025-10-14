@@ -10,7 +10,7 @@ import {
   VisibilityOff as VisibilityOffIcon,
   School as TutorIcon
 } from '@mui/icons-material';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -22,10 +22,9 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
-  const token = searchParams.get('token');
+  const { token } = useParams(); // ✅ get token from URL path
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,11 +74,7 @@ export default function ResetPassword() {
         </Typography>
         <Paper elevation={3} sx={{ p: 3, mt: 3, width: '100%' }}>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
             {success ? (
               <Alert severity="success" sx={{ mb: 2 }}>
                 Password reset successfully! Redirecting to login...
@@ -95,17 +90,10 @@ export default function ResetPassword() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockIcon />
-                      </InputAdornment>
-                    ),
+                    startAdornment: <InputAdornment position="start"><LockIcon /></InputAdornment>,
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
+                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                           {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                         </IconButton>
                       </InputAdornment>
@@ -121,11 +109,7 @@ export default function ResetPassword() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockIcon />
-                      </InputAdornment>
-                    ),
+                    startAdornment: <InputAdornment position="start"><LockIcon /></InputAdornment>,
                   }}
                 />
                 <Button

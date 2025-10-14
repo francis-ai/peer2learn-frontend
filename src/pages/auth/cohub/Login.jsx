@@ -40,10 +40,10 @@ export default function CohubLogin() {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/cohub/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post(`${BASE_URL}/api/auth/cohub/login`,  
+        {email,password},
+        { withCredentials: true }
+      );
 
       const { cohub, token } = response.data;
       console.log('Login success:', cohub);

@@ -65,9 +65,7 @@ export default function ManageTutor() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  // Use a single state for the selected tutor (used for modal and edit dialog)
   const [selectedTutor, setSelectedTutor] = useState(null);
-
   const [editStatus, setEditStatus] = useState('');
   const [editVerification, setEditVerification] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
@@ -89,7 +87,7 @@ export default function ManageTutor() {
       return matchesSearch && tutor.verification_status === activeFilter;
     });
     setFilteredTutors(filtered);
-    setPage(1); // reset page on filter/search change
+    setPage(1);
   }, [searchTerm, tutors, activeFilter]);
 
   const fetchTutors = async () => {
@@ -106,7 +104,6 @@ export default function ManageTutor() {
     }
   };
 
-  // Open modal for detailed view
   const handleOpenModal = (tutor) => {
     setSelectedTutor(tutor);
     setOpenModal(true);
@@ -116,14 +113,12 @@ export default function ManageTutor() {
     setOpenModal(false);
   };
 
-  // Open edit dialog and initialize fields
   const handleEditClick = (tutor) => {
     setSelectedTutor(tutor);
     setEditStatus(tutor.status);
     setEditVerification(tutor.verification_status);
     setOpenDialog(true);
   };
-
   const handleCloseDialog = () => {
     setSelectedTutor(null);
     setOpenDialog(false);
@@ -143,7 +138,6 @@ export default function ManageTutor() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Update failed');
 
-      // Update the tutor locally after success
       setTutors((prev) =>
         prev.map((t) =>
           t.id === selectedTutor.id
@@ -222,19 +216,15 @@ export default function ManageTutor() {
                   <TableCell>Rating</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Verification</TableCell>
-                  <TableCell align="right">Action</TableCell>
+                  <TableCell align="center">View</TableCell>
+                  <TableCell align="center">Edit</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredTutors
                   .slice((page - 1) * rowsPerPage, page * rowsPerPage)
                   .map((tutor) => (
-                    <TableRow
-                      key={tutor.id}
-                      hover
-                      sx={{ cursor: 'pointer' }}
-                      onClick={() => handleOpenModal(tutor)}
-                    >
+                    <TableRow key={tutor.id} hover>
                       <TableCell>
                         <Stack direction="row" alignItems="center" spacing={2}>
                           <Avatar sx={{ bgcolor: 'primary.main' }}>
@@ -286,14 +276,25 @@ export default function ManageTutor() {
                           size="small"
                         />
                       </TableCell>
-                      <TableCell
-                        align="right"
-                        onClick={(e) => {
-                          e.stopPropagation(); // prevent modal open when clicking button
-                          handleEditClick(tutor);
-                        }}
-                      >
-                        <Button variant="outlined" size="small">
+
+                      {/* View Button */}
+                      <TableCell align="center">
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => handleOpenModal(tutor)}
+                        >
+                          View
+                        </Button>
+                      </TableCell>
+
+                      {/* Edit Button */}
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => handleEditClick(tutor)}
+                        >
                           Edit
                         </Button>
                       </TableCell>
@@ -323,41 +324,19 @@ export default function ManageTutor() {
               <Typography variant="h6" gutterBottom>
                 {selectedTutor.name} — Details
               </Typography>
+              <Typography><strong>Email:</strong> {selectedTutor.email}</Typography>
+              <Typography><strong>Address:</strong> {selectedTutor.address || 'N/A'}</Typography>
+              <Typography><strong>Location:</strong> {selectedTutor.location || 'N/A'}</Typography>
+              <Typography><strong>Phone:</strong> {selectedTutor.phone || 'N/A'}</Typography>
+              <Typography><strong>Degree:</strong> {selectedTutor.degree || 'N/A'}</Typography>
+              <Typography><strong>Bio:</strong> {selectedTutor.bio || 'N/A'}</Typography>
+              <Typography><strong>Gender:</strong> {selectedTutor.gender || 'N/A'}</Typography>
               <Typography>
-                <strong>Email:</strong> {selectedTutor.email}
+                <strong>Created At:</strong> {new Date(selectedTutor.created_at).toLocaleString()}
               </Typography>
-              <Typography>
-                <strong>Address:</strong> {selectedTutor.address || 'N/A'}
-              </Typography>
-              <Typography>
-                <strong>Location:</strong> {selectedTutor.location || 'N/A'}
-              </Typography>
-              <Typography>
-                <strong>Phone:</strong> {selectedTutor.phone || 'N/A'}
-              </Typography>
-              <Typography>
-                <strong>Degree:</strong> {selectedTutor.degree || 'N/A'}
-              </Typography>
-              <Typography>
-                <strong>Bio:</strong> {selectedTutor.bio || 'N/A'}
-              </Typography>
-              <Typography>
-                <strong>Gender:</strong> {selectedTutor.gender || 'N/A'}
-              </Typography>
-              <Typography>
-                <strong>Created At:</strong>{' '}
-                {new Date(selectedTutor.created_at).toLocaleString()}
-              </Typography>
-              <Typography>
-                <strong>Total Earnings:</strong> ₦{selectedTutor.total_earnings}
-              </Typography>
-              <Typography>
-                <strong>Available Balance:</strong> ₦{selectedTutor.available_balance}
-              </Typography>
-              <Typography>
-                <strong>Total Withdrawn:</strong>{' '}
-                {selectedTutor.total_withdrawn ?? 'N/A'}
-              </Typography>
+              <Typography><strong>Total Earnings:</strong> ₦{selectedTutor.total_earnings}</Typography>
+              <Typography><strong>Available Balance:</strong> ₦{selectedTutor.available_balance}</Typography>
+              <Typography><strong>Total Withdrawn:</strong> ₦{selectedTutor.total_withdrawn ?? 'N/A'}</Typography>
               {selectedTutor.profile_img && (
                 <Box mt={2}>
                   <img

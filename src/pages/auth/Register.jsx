@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   Snackbar,
   Alert,
-  Stack
+  // Stack
 } from '@mui/material';
 import { Person, Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
@@ -69,7 +69,7 @@ export default function Register() {
         severity: 'success',
       });
 
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate('/dashboard'), 3000);
     } catch (err) {
       setSnackbar({
         open: true,
@@ -81,10 +81,10 @@ export default function Register() {
     }
   };
 
-  // Social signup handlers
-  const handleGoogleSignup = () => {
-    window.location.href = `${BASE_URL}/api/auth/students/google`;
-  };
+  // // Social signup handlers
+  // const handleGoogleSignup = () => {
+  //   window.location.href = `${BASE_URL}/api/auth/students/google`;
+  // };
 
   return (
     <Container maxWidth="sm">
@@ -230,7 +230,7 @@ export default function Register() {
             </Button>
 
             {/* Social signup section */}
-            <Stack spacing={2} sx={{ mt: 3 }}>
+            {/* <Stack spacing={2} sx={{ mt: 3 }}>
               <Button
                 variant="outlined"
                 fullWidth
@@ -249,7 +249,7 @@ export default function Register() {
                 />
                 Sign up with Google
               </Button>
-            </Stack>
+            </Stack> */}
 
             <Typography
               sx={{
@@ -272,7 +272,7 @@ export default function Register() {
         open={snackbar.open}
         autoHideDuration={4000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert severity={snackbar.severity} variant="filled" onClose={handleCloseSnackbar}>
           {snackbar.message}

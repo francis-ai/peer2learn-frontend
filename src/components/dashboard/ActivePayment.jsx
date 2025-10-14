@@ -22,6 +22,8 @@ import axios from 'axios';
 import { useAuth } from '../../context/studentAuthContext';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY ||
+  "pk_live_e2c76d414fdb6b5819fb2d8489e22872a1e64d9d";
 
 const ActivePayments = ({ formatDate, formatCurrency }) => {
   const { student } = useAuth();
@@ -77,7 +79,7 @@ const ActivePayments = ({ formatDate, formatCurrency }) => {
 
     // 🔒 Comment out the actual Paystack setup for now
     const handler = window.PaystackPop.setup({
-      key: 'pk_test_5624a1b37a80ce2f38d7d2da8e5d02a2a405d8de',
+      key: PAYSTACK_PUBLIC_KEY,
       email: student.email,
       amount: Number(installment.amount) * 100,
       currency: 'NGN',

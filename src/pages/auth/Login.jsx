@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
   Alert,
-  Stack
+  // Stack
 } from '@mui/material';
 import { Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAuth } from '../../context/studentAuthContext';
@@ -49,6 +49,7 @@ export default function Login() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        credentials: 'include', // 🔥 This is the magic line
       });
 
       const data = await res.json();
@@ -89,9 +90,9 @@ export default function Login() {
   };
 
    // Social signup handlers
-  const handleGoogleSignin = () => {
-    window.location.href = `${BASE_URL}/api/auth/students/google`;
-  };
+  // const handleGoogleSignin = () => {
+  //   window.location.href = `${BASE_URL}/api/auth/students/google`;
+  // };
 
 
   return (
@@ -213,7 +214,7 @@ export default function Login() {
             </Button>
 
             {/* Social signup section */}
-            <Stack spacing={2} sx={{ mt: 3 }}>
+            {/* <Stack spacing={2} sx={{ mt: 3 }}>
               <Button
                 variant="outlined"
                 fullWidth
@@ -232,7 +233,7 @@ export default function Login() {
                 />
                 Sign in with Google
               </Button>
-            </Stack>
+            </Stack> */}
 
             <Typography sx={{ textAlign: 'center', mt: 3, color: 'text.secondary' }}>
               Don't have an account?{' '}

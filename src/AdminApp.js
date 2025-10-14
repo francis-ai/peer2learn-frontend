@@ -27,6 +27,7 @@ import Classes from './pages/admin/Classes';
 import Settings from './pages/admin/Settings';
 import OtherSettings from './pages/admin/OtherSettings';
 import ManageCohub from './pages/admin/ManageCohub';
+import Enrollments from './pages/admin/Enrollments';
 
 
 const AdminApp = () => {
@@ -55,6 +56,7 @@ const AdminApp = () => {
           <Route path="classes" element={<Classes />} />
           <Route path="assignments" element={<Assignment />} />
           <Route path="payments" element={<Payment />} />
+          <Route path="enrollments" element={<Enrollments />} />
           <Route path="settings" element={<Settings />} />
           <Route path="other-settings" element={<OtherSettings />} />
           <Route path="cohubs" element={<ManageCohub />} />

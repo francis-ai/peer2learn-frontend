@@ -25,8 +25,10 @@ import {
   DialogContent,
   DialogTitle,
   TextareaAutosize,
+  Switch,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
+import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -36,11 +38,7 @@ export default function TutorCourses() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [rejectDialog, setRejectDialog] = useState({ open: false, id: null });
   const [rejectReason, setRejectReason] = useState('');
 
@@ -53,78 +51,82 @@ export default function TutorCourses() {
   useEffect(() => {
     const filtered = courses.filter(
       (course) =>
-        course.tutor_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.course_name.toLowerCase().includes(searchTerm.toLowerCase())
+        course.tutor_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.course_name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredCourses(filtered);
   }, [searchTerm, courses]);
 
+  // ✅ Fetch tutor courses
   const fetchTutorCourses = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/api/admin/all-tutor-courses`);
-      const data = await res.json();
-      setCourses(data);
+      const res = await axios.get(`${BASE_URL}/api/admin/all-tutor-courses`);
+      setCourses(Array.isArray(res.data) ? res.data : res.data.data || []);
     } catch (err) {
       console.error('Failed to fetch tutor courses:', err);
-      setSnackbar({
-        open: true,
-        message: 'Failed to load tutor courses.',
-        severity: 'error',
-      });
+      setSnackbar({ open: true, message: 'Failed to load tutor courses.', severity: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Update course approval/rejection
   const handleStatusUpdate = async (id, status, reason = '') => {
     try {
-      const res = await fetch(`${BASE_URL}/api/admin/tutor-course-status/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status, reason }),
+      const res = await axios.put(`${BASE_URL}/api/admin/tutor-course-status/${id}`, {
+        status,
+        reason,
+      });
+      if (res.data.success) {
+        setCourses((prev) => prev.map((c) => (c.tutor_course_id === id ? { ...c, status } : c)));
+        setSnackbar({ open: true, message: `Course ${status} successfully.`, severity: 'success' });
+      }
+    } catch (err) {
+      console.error(err);
+      setSnackbar({ open: true, message: 'Failed to update course status.', severity: 'error' });
+    }
+  };
+
+  // ✅ Toggle showOnLandingPage — like ManageCohub
+  const handleToggleLandingPage = async (id, show) => {
+    try {
+      await axios.put(`${BASE_URL}/api/admin/update-tutor-course-show-landing/${id}`, {
+        showOnLandingPage: show ? 1 : 0,
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to update status');
-
+      // ✅ Update state immediately
       setCourses((prev) =>
         prev.map((c) =>
-          c.tutor_course_id === id ? { ...c, status } : c
+          c.tutor_course_id === id
+            ? { ...c, showOnLandingPage: show ? 1 : 0 }
+            : c
         )
       );
 
       setSnackbar({
         open: true,
-        message: `Course status updated to "${status}"`,
+        message: 'Landing page status updated!',
         severity: 'success',
       });
     } catch (err) {
       console.error(err);
       setSnackbar({
         open: true,
-        message: err.message,
+        message: 'Failed to update landing page status.',
         severity: 'error',
       });
     }
   };
 
-  const handleReject = (id) => {
-    setRejectDialog({ open: true, id });
-  };
 
+  const handleReject = (id) => setRejectDialog({ open: true, id });
   const confirmReject = () => {
     handleStatusUpdate(rejectDialog.id, 'rejected', rejectReason);
     setRejectDialog({ open: false, id: null });
     setRejectReason('');
   };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
-  };
+  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleCloseSnackbar = () => setSnackbar((prev) => ({ ...prev, open: false }));
 
   return (
     <Box sx={{ p: 3 }}>
@@ -160,45 +162,58 @@ export default function TutorCourses() {
                   <TableRow>
                     <TableCell>Tutor</TableCell>
                     <TableCell>Course</TableCell>
+                    <TableCell>Category</TableCell>
                     <TableCell>Location</TableCell>
                     <TableCell>Price</TableCell>
-                    <TableCell>Duration</TableCell>
                     <TableCell>Status</TableCell>
+                    <TableCell>Show on Landing</TableCell>
                     <TableCell align="right">Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredCourses
                     .slice((page - 1) * rowsPerPage, page * rowsPerPage)
-                    .map((course) => (
-                      <TableRow key={course.tutor_course_id} hover>
-                        <TableCell>{course.tutor_name}</TableCell>
-                        <TableCell>{course.course_name}</TableCell>
-                        <TableCell>{course.location}</TableCell>
-                        <TableCell>{course.price}</TableCell>
-                        <TableCell>{course.duration}</TableCell>
+                    .map((c) => (
+                      <TableRow key={c.tutor_course_id} hover>
+                        <TableCell>{c.tutor_name}</TableCell>
+                        <TableCell>{c.course_name}</TableCell>
+                        <TableCell>{c.category}</TableCell>
+                        <TableCell>{c.location}</TableCell>
+                        <TableCell>₦{c.price}</TableCell>
                         <TableCell>
                           <Chip
-                            label={course.status}
+                            label={c.status}
                             color={
-                              course.status === 'approved'
+                              c.status === 'approved'
                                 ? 'success'
-                                : course.status === 'rejected'
+                                : c.status === 'rejected'
                                 ? 'error'
                                 : 'warning'
                             }
                             size="small"
                           />
                         </TableCell>
+
+                        {/* ✅ Switch format from ManageCohub */}
+                        <TableCell>
+                          <Switch
+                            checked={c.showOnLandingPage === 1}
+                            onChange={(e) =>
+                              handleToggleLandingPage(c.tutor_course_id, e.target.checked)
+                            }
+                            color="primary"
+                          />
+                        </TableCell>
+
                         <TableCell align="right">
-                          {course.status === 'pending' ? (
+                          {c.status === 'pending' ? (
                             <Stack direction="row" spacing={1} justifyContent="flex-end">
                               <Button
                                 variant="outlined"
                                 color="success"
                                 size="small"
                                 onClick={() =>
-                                  handleStatusUpdate(course.tutor_course_id, 'approved')
+                                  handleStatusUpdate(c.tutor_course_id, 'approved')
                                 }
                               >
                                 Approve
@@ -207,7 +222,7 @@ export default function TutorCourses() {
                                 variant="outlined"
                                 color="error"
                                 size="small"
-                                onClick={() => handleReject(course.tutor_course_id)}
+                                onClick={() => handleReject(c.tutor_course_id)}
                               >
                                 Reject
                               </Button>
@@ -234,7 +249,7 @@ export default function TutorCourses() {
         </Card>
       )}
 
-      {/* Reject Reason Dialog */}
+      {/* Reject Dialog */}
       <Dialog open={rejectDialog.open} onClose={() => setRejectDialog({ open: false, id: null })}>
         <DialogTitle>Rejection Reason</DialogTitle>
         <DialogContent>

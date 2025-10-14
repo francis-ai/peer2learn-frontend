@@ -29,6 +29,7 @@ const SocialLoginSuccess = () => {
     }
   }, [location.search, navigate, setStudent, fetchStudentProfile]);
 
+  
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h2>Signing you in...</h2>

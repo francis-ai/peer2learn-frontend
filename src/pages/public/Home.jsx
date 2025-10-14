@@ -7,6 +7,9 @@ import CTAsection from '../../components/CTAsection';
 import Announcement from '../../components/Announcement';
 import VideoPlayer from '../../components/VideoPlayer';
 import { Box } from '@mui/material';
+import CohubShowcase from '../../components/Cohub';
+import TutorShowcase from '../../components/TutorCards';
+import Category from '../../components/Category';
 
 
 export default function Home() {
@@ -15,7 +18,10 @@ export default function Home() {
       <Hero />
       <Announcement/>
       <Services />
+      <Category />
       <VideoPlayer />
+      <TutorShowcase />
+      <CohubShowcase />
       <Testimonials />
       <CTAsection />
     </Box>

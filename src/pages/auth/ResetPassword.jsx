@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { 
   Box,
   Typography,
@@ -26,11 +26,9 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  const [searchParams] = useSearchParams();
+  const { token } = useParams(); // ✅ get token from URL path
   const navigate = useNavigate();
   const theme = useTheme();
-
-  const token = searchParams.get('token');
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
@@ -44,15 +42,18 @@ export default function ResetPassword() {
       return;
     }
 
+    if (!token) {
+      setSnackbar({ open: true, message: 'Token is missing', severity: 'error' });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(`${BASE_URL}/api/auth/students/reset-password`, {
+      const res = await fetch(`${BASE_URL}/api/auth/students/reset-password/${token}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ token, newPassword })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: newPassword })
       });
 
       const data = await res.json();
@@ -118,8 +119,6 @@ export default function ResetPassword() {
 
           {!success ? (
             <Box component="form" onSubmit={handleSubmit}>
-              <input type="hidden" value={token} />
-
               <TextField
                 fullWidth
                 label="New Password"
@@ -145,12 +144,7 @@ export default function ResetPassword() {
                     </InputAdornment>
                   ),
                 }}
-                sx={{
-                  mb: 2,
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '12px'
-                  }
-                }}
+                sx={{ mb: 2, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
                 required
               />
 
@@ -169,12 +163,7 @@ export default function ResetPassword() {
                     </InputAdornment>
                   ),
                 }}
-                sx={{
-                  mb: 3,
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '12px'
-                  }
-                }}
+                sx={{ mb: 3, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
                 required
               />
 
@@ -191,9 +180,7 @@ export default function ResetPassword() {
                   fontWeight: 600,
                   background: 'linear-gradient(90deg, #3a86ff, #4361ee)',
                   boxShadow: '0 4px 12px rgba(58, 134, 255, 0.3)',
-                  '&:hover': {
-                    background: 'linear-gradient(90deg, #4361ee, #3a0ca3)'
-                  },
+                  '&:hover': { background: 'linear-gradient(90deg, #4361ee, #3a0ca3)' },
                   mb: 2
                 }}
               >
@@ -228,9 +215,7 @@ export default function ResetPassword() {
                   fontWeight: 600,
                   background: 'linear-gradient(90deg, #3a86ff, #4361ee)',
                   boxShadow: '0 4px 12px rgba(58, 134, 255, 0.3)',
-                  '&:hover': {
-                    background: 'linear-gradient(90deg, #4361ee, #3a0ca3)'
-                  }
+                  '&:hover': { background: 'linear-gradient(90deg, #4361ee, #3a0ca3)' }
                 }}
               >
                 Return to Login

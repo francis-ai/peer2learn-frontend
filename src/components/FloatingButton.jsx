@@ -4,7 +4,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const WhatsAppWidget = () => {
-  const phoneNumber = '2348159227696'; // Your phone number without + or 0
+  const phoneNumber = '2348164557305'; // Your phone number without + or 0
   const message = encodeURIComponent('I am from Peer2Learn');
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 

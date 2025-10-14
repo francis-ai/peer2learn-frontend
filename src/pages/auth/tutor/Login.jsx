@@ -40,10 +40,10 @@ export default function Login() {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/tutors/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post(`${BASE_URL}/api/auth/tutors/login`, 
+        {email,password},
+        { withCredentials: true }
+    );
 
       const { tutor, token } = response.data;
       console.log('Login success:', tutor);

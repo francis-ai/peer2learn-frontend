@@ -11,7 +11,6 @@ import {
   Checkbox,
   Button,
 } from "@mui/material";
-import { AttachMoney } from "@mui/icons-material";
 import axios from "axios";
 
 export default function StepPayment({
@@ -37,7 +36,6 @@ export default function StepPayment({
         !formData.course ||
         !formData.selectedTutor ||
         !formData.paymentPlan ||
-        !formData.location ||
         !formData.deliveryMethod
       ) {
         setSnackbar({
@@ -169,7 +167,25 @@ export default function StepPayment({
             required
           />
         }
-        label="I agree to the terms and conditions"
+        label={
+          <Typography variant="body2">
+            I agree to the{" "}
+            <Typography
+              component="a"
+              href="/terms"
+              target="_blank"
+              // rel="noopener noreferrer"
+              sx={{
+                color: "primary.main",
+                textDecoration: "underline",
+                cursor: "pointer",
+                "&:hover": { textDecoration: "none" },
+              }}
+            >
+              terms and conditions
+            </Typography>
+          </Typography>
+        }
         sx={{ mb: 2 }}
       />
 
@@ -177,7 +193,6 @@ export default function StepPayment({
         variant="contained"
         size="large"
         fullWidth
-        startIcon={<AttachMoney />}
         disabled={!formData.termsAccepted}
         onClick={handleSubmit}
       >

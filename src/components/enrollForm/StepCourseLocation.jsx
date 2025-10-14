@@ -1,41 +1,59 @@
-// components/EnrollForm/StepCourseLocation.jsx
+// components/EnrollForm/StepCourse.jsx
+import { useState, useMemo } from "react";
 import { Grid, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
-export default function StepCourseLocation({ courses, locations, formData, handleChange }) {
+export default function StepCourse({ courses, formData, handleChange }) {
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  // Get unique categories from courses
+  const categories = useMemo(() => {
+    const cats = courses.map((c) => c.category);
+    return [...new Set(cats)]; // remove duplicates
+  }, [courses]);
+
+  // Filter courses by selected category
+  const filteredCourses = useMemo(() => {
+    if (!selectedCategory) return [];
+    return courses.filter((c) => c.category === selectedCategory);
+  }, [courses, selectedCategory]);
+
   return (
     <Grid container spacing={3}>
+      {/* Category Select */}
       <Grid item xs={12} md={6} sx={{ width: { xs: "250px", md: "360px" }, mx: "auto" }}>
         <FormControl fullWidth>
-          <InputLabel>Select Course</InputLabel>
+          <InputLabel>Select Category</InputLabel>
           <Select
-            name="course"
-            value={formData.course}
-            onChange={handleChange}
-            label="Select Course"
-            required
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              handleChange({ target: { name: "course", value: "" } }); // reset course
+            }}
+            label="Select Category"
           >
-            {courses.map((course) => (
-              <MenuItem key={course.id} value={course.id}>
-                {course.name}
+            {categories.map((cat, idx) => (
+              <MenuItem key={idx} value={cat}>
+                {cat}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Grid>
 
+      {/* Course Select */}
       <Grid item xs={12} md={6} sx={{ width: { xs: "250px", md: "360px" }, mx: "auto" }}>
-        <FormControl fullWidth>
-          <InputLabel>Select Location</InputLabel>
+        <FormControl fullWidth disabled={!selectedCategory}>
+          <InputLabel>Select Course</InputLabel>
           <Select
-            name="location"
-            value={formData.location}
+            name="course"
+            value={formData.course || ""}
             onChange={handleChange}
-            label="Select Location"
+            label="Select Course"
             required
           >
-            {locations.map((loc) => (
-              <MenuItem key={loc.id} value={loc.location_name}>
-                {loc.location_name}
+            {filteredCourses.map((course) => (
+              <MenuItem key={course.id} value={course.id}>
+                {course.name}
               </MenuItem>
             ))}
           </Select>

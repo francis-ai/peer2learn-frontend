@@ -164,8 +164,9 @@ export default function Profile() {
   // 👇 wherever you update or use it
   console.log("locationInput:", locationInput);
 
+  
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ py: 3 }}>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

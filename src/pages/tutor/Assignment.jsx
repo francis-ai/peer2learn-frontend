@@ -5,8 +5,6 @@ import {
   Table, TableHead, TableRow, TableCell, TableBody, IconButton,
   Snackbar, Alert, CircularProgress
 } from '@mui/material';
-import FaqIcon from '@mui/icons-material/Help';
-import SecurityIcon from '@mui/icons-material/Security';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Download } from '@mui/icons-material';
@@ -54,9 +52,7 @@ export default function Assignment() {
 
   const fetchStudents = useCallback(async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/tutors/active-student/${tutorId}`, {
-        headers: { 'Cache-Control': 'no-cache' },
-      });
+      const res = await axios.get(`${BASE_URL}/api/tutors/active-student/${tutorId}`);
       setStudents(res.data);
     } catch (err) {
       console.error(err);
@@ -159,10 +155,10 @@ export default function Assignment() {
   };
 
   return (
-    <Box p={3}>
+    <Box py={3}>
       <Tabs value={tabValue} onChange={handleTabChange} variant="fullWidth">
-        <Tab label="Active Students" icon={<FaqIcon />} />
-        <Tab label="Manage Assignments" icon={<SecurityIcon />} />
+        <Tab label="Active Students" />
+        <Tab label="Manage Assignments" />
       </Tabs>
 
       {tabValue === 0 && (
@@ -194,41 +190,50 @@ export default function Assignment() {
       )}
 
       {tabValue === 1 && (
-        <Table sx={{ mt: 3 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Student</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Submitted</TableCell>
-              <TableCell>Grade</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {assignments.map((item) => (
-              <TableRow key={item.assignment_id}>
-                <TableCell>{item.student_name}</TableCell>
-                <TableCell>{item.title}</TableCell>
-                <TableCell>{item.submission_count > 0 ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{myGrade || 'Ungraded'}</TableCell>
-                <TableCell>
-                  {item.submission_count > 0 && (
-                    <>
-                      {item.submission_file_url && (
-                        <IconButton href={item.submission_file_url} target="_blank">
-                          <DownloadIcon />
-                        </IconButton>
-                      )}
-                      <IconButton onClick={() => openGradingModal(item.assignment_id)}>
-                        <VisibilityIcon />
-                      </IconButton>
-                    </>
-                  )}
-                </TableCell>
+        <Box sx={{ width: '100%', overflowX: 'auto', mt: 3 }}>
+          <Table sx={{ minWidth: 650 }} aria-label="assignments table">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>Student</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>Title</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>Submitted</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>Grade</TableCell>
+                <TableCell sx={{ whiteSpace: 'nowrap' }}>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {assignments.map((item) => (
+                <TableRow key={item.assignment_id}>
+                  <TableCell>{item.student_name}</TableCell>
+                  <TableCell sx={{ maxWidth: { xs: 120, sm: 'auto' }, whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                    {item.title}
+                  </TableCell>
+                  <TableCell>{item.submission_count > 0 ? 'Yes' : 'No'}</TableCell>
+                  <TableCell>{myGrade || 'Ungraded'}</TableCell>
+                  <TableCell>
+                    {item.submission_count > 0 && (
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        {item.submission_file_url && (
+                          <IconButton
+                            size="small"
+                            href={item.submission_file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <DownloadIcon fontSize="small" />
+                          </IconButton>
+                        )}
+                        <IconButton size="small" onClick={() => openGradingModal(item.assignment_id)}>
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
       )}
 
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>

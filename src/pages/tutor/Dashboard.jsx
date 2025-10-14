@@ -95,7 +95,7 @@ export default function Dashboard() {
           <Grid container spacing={3} sx={{ mb: 4 }}>
             {stats.map((stat, index) => (
               <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
-                <Card sx={{ height: '100%' }}>
+                <Card sx={{ height: '100%', width: {xs: '280px', md: '250px'} }}>
                   <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar
                       sx={{

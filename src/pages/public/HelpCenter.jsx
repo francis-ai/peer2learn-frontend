@@ -12,7 +12,6 @@ import {
   HelpOutline as HelpOutlineIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
-  Forum as ForumIcon,
 } from '@mui/icons-material';
 
 export default function Help() {
@@ -21,23 +20,16 @@ export default function Help() {
       icon: <EmailIcon color="primary" sx={{ fontSize: 40 }} />,
       title: "Email Support",
       description: "Get detailed help from our support team within 24 hours",
-      action: "Send us an email",
+      action: "support@peer2learn.com",
       color: "#4caf50"
     },
     {
       icon: <PhoneIcon color="primary" sx={{ fontSize: 40 }} />,
       title: "Phone Support",
       description: "Call us during business hours (9AM-5PM WAT)",
-      action: "See phone numbers",
+      action: "+2349048735944",
       color: "#ff9800"
     },
-    {
-      icon: <ForumIcon color="primary" sx={{ fontSize: 40 }} />,
-      title: "Community Forum",
-      description: "Get help from other students and tutors",
-      action: "Visit forum",
-      color: "#9c27b0"
-    }
   ];
 
   return (
