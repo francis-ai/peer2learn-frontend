@@ -48,9 +48,11 @@ const menuItems = [
   { text: 'Manage Course', icon: <Book />, path: '/admin/courses' },
   { text: 'Manage Offices', icon: <AccountBalance />, path: '/admin/offices' },
   { text: 'Manage Cohubs', icon: <AccountBalance />, path: '/admin/cohubs' },
+  
   { text: 'Tutor Courses', icon: <HowToReg />, path: '/admin/tutor-courses' }, 
   { text: 'Track Assignments', icon: <Assignment />, path: '/admin/assignments' },
   { text: 'Track Classes Progress', icon: <Class />, path: '/admin/classes' },
+  { text: 'Messages & Chat', icon: <AccountBalance />, path: '/admin/messages' },
   { text: 'Tutor Withdrawals Request', icon: <RequestPage />, path: '/admin/withdrawals' }, 
   { text: 'Payments & Transactions', icon: <MonetizationOn />, path: '/admin/payments' },
   { text: 'Reviews & Feedback', icon: <Star />, path: '/admin/reviews' },

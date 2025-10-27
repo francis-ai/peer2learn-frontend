@@ -1,3 +1,4 @@
+// src/pages/auth/admin/Login.jsx
 import React, { useState } from 'react';
 import { 
   Box,
@@ -19,9 +20,9 @@ import {
   VisibilityOff as VisibilityOffIcon,
   AdminPanelSettings as AdminIcon
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAdminAuth } from '../../../context/adminAuthContext';
+import { useNavigate } from "react-router-dom"; // add at top
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -31,10 +32,10 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // inside component
   const { setAdmin } = useAdminAuth();
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -45,7 +46,6 @@ export default function Login() {
       return;
     }
 
-    
     try {
       const response = await axios.post(`${BASE_URL}/api/auth/admin/login`, {
         email,
@@ -59,7 +59,11 @@ export default function Login() {
       localStorage.setItem('adminToken', token);
       setAdmin(admin);
 
-      navigate('/admin');
+      // ✅ Force redirect for reliability across browsers
+      setTimeout(() => {
+        navigate('/admin');
+      }, 300);
+
     } catch (err) {
       console.error('Login error:', err);
       const message = err.response?.data?.message || 'Login failed. Please try again.';

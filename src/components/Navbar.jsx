@@ -42,6 +42,7 @@ export default function Navbar() {
     { path: '/my-classes', label: 'Classes' },
     { path: '/payment', label: 'Payment' },
     { path: '/reviews', label: 'Reviews' },
+    { path: '/messages', label: 'Messages' },
     { path: '/notifications', label: 'Notifications' },
     { path: '/profile', label: 'Profile' },
   ];

@@ -29,6 +29,8 @@ import Profile from './pages/student/Profile';
 import MyClasses from './pages/student/MyClasses';
 import Reviews from './pages/student/Reviews';
 import Payment from './pages/student/Payment';
+import Messages from './pages/student/Messages';
+import Chat from './pages/student/Chat';
 import Notifications from './pages/student/Notifications';
 import Enroll from './pages/student/EnrollForm';
 import Schedule from './pages/student/Schedule';
@@ -105,6 +107,24 @@ function App() {
           element={
             <StudentProtectedRoutes role="student">
               <PublicLayout><Reviews /></PublicLayout>
+            </StudentProtectedRoutes>
+          }
+        />
+
+        <Route
+          path="/messages"
+          element={
+            <StudentProtectedRoutes role="student">
+              <PublicLayout><Messages /></PublicLayout>
+            </StudentProtectedRoutes>
+          }
+        />
+
+        <Route
+          path="/messages/:studentId/:tutorid"
+          element={
+            <StudentProtectedRoutes role="student">
+              <PublicLayout><Chat /></PublicLayout>
             </StudentProtectedRoutes>
           }
         />

@@ -43,6 +43,7 @@ const menuItems = [
   { text: 'Students', icon: <People />, path: '/tutor/students' },
   { text: 'Schedule', icon: <CalendarMonth />, path: '/tutor/schedule' },
   { text: 'Earnings', icon: <Payments />, path: '/tutor/earnings' },
+  { text: 'Messages', icon: <Payments />, path: '/tutor/messages' },
   { text: 'Assignment', icon: <School />, path: '/tutor/assignment' },
   { text: 'Reviews', icon: <Chat />, path: '/tutor/reviews' },
   { text: 'Notification', icon: <Mail />, path: '/tutor/notification' }

@@ -25,7 +25,8 @@ import Schedule from './pages/tutor/Schedule';
 import Profile from './pages/tutor/Profile';
 import Notification from './pages/tutor/Notification';
 import Assignment from './pages/tutor/Assignment';
-
+import Messages from './pages/tutor/Messages';
+import Chat from './pages/tutor/Chat';
 
 const TutorApp = () => {
   return (
@@ -54,6 +55,8 @@ const TutorApp = () => {
           <Route path="profile-settings" element={<Profile />} />
           <Route path="notification" element={<Notification />} />
           <Route path="assignment" element={<Assignment />} />
+          <Route path="messages" element={<Messages />} />
+          <Route path="messages/:studentId" element={<Chat />} />
         </Route>
       </Routes>
     </TutorAuthProvider>

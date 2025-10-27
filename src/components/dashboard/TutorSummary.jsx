@@ -17,6 +17,7 @@ import {
 import { School } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -29,12 +30,23 @@ const TutorSummary = ({ student }) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const [snackbar, setSnackbar] = useState({
     open: false,
     severity: 'success',
     message: ''
   });
+
+  const handleMessageTutor = (tutor) => {
+    if (!student) return;
+    navigate(`/messages/${student.id}/${tutor.tutor_id}`, {
+      state: {
+        tutorId: tutor.tutor_id,
+        tutorName: tutor.tutor_name,
+      },
+    });
+  };
 
   useEffect(() => {
     const fetchTutors = async () => {
@@ -137,6 +149,10 @@ const TutorSummary = ({ student }) => {
                 </Typography>
               </Box>
             </Box>
+
+            <Button variant="outlined" fullWidth onClick={() => handleMessageTutor(tutor)} sx={{ mb: 1 }}>
+              Message Tutor
+            </Button>
             <Button variant="text" fullWidth onClick={() => handleOpenModal(tutor)}>
               Rate Tutor
             </Button>

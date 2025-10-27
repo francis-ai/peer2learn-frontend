@@ -12,7 +12,6 @@ import {
   VisibilityOff as VisibilityOffIcon,
   School as TutorIcon
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTutorAuth } from '../../../context/tutorAuthContext';
 
@@ -25,7 +24,6 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
   const { setTutor } = useTutorAuth();
 
   const handleSubmit = async (e) => {
@@ -40,10 +38,10 @@ export default function Login() {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/tutors/login`, 
-        {email,password},
+      const response = await axios.post(`${BASE_URL}/api/auth/tutors/login`,
+        { email, password },
         { withCredentials: true }
-    );
+      );
 
       const { tutor, token } = response.data;
       console.log('Login success:', tutor);
@@ -52,7 +50,11 @@ export default function Login() {
       localStorage.setItem('tutorToken', token);
       setTutor(tutor);
 
-      navigate('/tutor');
+      // ✅ Force redirect (handles devices where navigate fails)
+      setTimeout(() => {
+        window.location.href = '/tutor';
+      }, 300);
+
     } catch (err) {
       console.error('Login error:', err);
       const message = err.response?.data?.message || 'Login failed. Please try again.';

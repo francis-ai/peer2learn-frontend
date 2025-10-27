@@ -28,6 +28,8 @@ import Settings from './pages/admin/Settings';
 import OtherSettings from './pages/admin/OtherSettings';
 import ManageCohub from './pages/admin/ManageCohub';
 import Enrollments from './pages/admin/Enrollments';
+import Messages from './pages/admin/Messages';
+import Chat from './pages/admin/Chat';
 
 
 const AdminApp = () => {
@@ -60,6 +62,8 @@ const AdminApp = () => {
           <Route path="settings" element={<Settings />} />
           <Route path="other-settings" element={<OtherSettings />} />
           <Route path="cohubs" element={<ManageCohub />} />
+          <Route path="messages" element={<Messages />} />
+          <Route path="messages/:tutorId/:studentId" element={<Chat />} />
         </Route>
       </Routes>
     </AdminAuthProvider>

@@ -12,7 +12,6 @@ import {
   VisibilityOff as VisibilityOffIcon,
   Work as WorkIcon
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCohubAuth } from '../../../context/cohubAuthContext';
 
@@ -25,7 +24,6 @@ export default function CohubLogin() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
   const { setCohub } = useCohubAuth();
 
   const handleSubmit = async (e) => {
@@ -41,7 +39,7 @@ export default function CohubLogin() {
 
     try {
       const response = await axios.post(`${BASE_URL}/api/auth/cohub/login`,  
-        {email,password},
+        { email, password },
         { withCredentials: true }
       );
 
@@ -52,7 +50,11 @@ export default function CohubLogin() {
       localStorage.setItem('cohubToken', token);
       setCohub(cohub);
 
-      navigate('/cohub');
+      // ✅ Force redirect to ensure all browsers redirect correctly
+      setTimeout(() => {
+        window.location.href = '/cohub';
+      }, 300);
+
     } catch (err) {
       console.error('Login error:', err);
       const message = err.response?.data?.message || 'Login failed. Please try again.';
