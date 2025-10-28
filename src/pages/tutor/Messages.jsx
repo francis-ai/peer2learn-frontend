@@ -120,23 +120,6 @@ export default function TutorMessages() {
                           {student.student_name}
                         </Typography>
                       }
-                      secondary={
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "text.secondary",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            maxWidth: "90%",
-                          }}
-                        >
-                          Last message:{" "}
-                          {student.last_message
-                            ? student.last_message
-                            : "No recent message"}
-                        </Typography>
-                      }
                     />
 
                     <Typography variant="caption" color="text.secondary">

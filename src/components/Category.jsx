@@ -13,12 +13,12 @@ const categories = [
   {
     title: "Languages",
     image: "https://cdn-icons-png.flaticon.com/512/1995/1995574.png",
-    description: "Master programming languages that power web and mobile apps.",
+    description: "Master languages for professional communications or personal purposes.",
   },
   {
     title: "Academics",
     image: "https://cdn-icons-png.flaticon.com/512/3062/3062634.png",
-    description: "Dive into courses and subjects that build strong technical foundations.",
+    description: "Dive into courses and subjects that build strong educational foundations. It's helpful for O'Level exams.",
   },
 ];
 
