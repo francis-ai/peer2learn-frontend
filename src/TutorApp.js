@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { TutorAuthProvider } from './context/tutorAuthContext';
 
 // Protected Routes
-import TutorProtectedRoutes from './routes/TutorProtectedRoutes';
+// import TutorProtectedRoutes from './routes/TutorProtectedRoutes';
 
 // Tutor Layout
 import TutorLayout from './layouts/TutorLayout';
@@ -41,12 +41,13 @@ const TutorApp = () => {
         {/* Protected routes */}
         <Route
           element={
-            <TutorProtectedRoutes role="tutor">
+            // <TutorProtectedRoutes role="tutor">
               <TutorLayout />
-            </TutorProtectedRoutes>
+            // </TutorProtectedRoutes>
           }
         >
           <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="students" element={<MyStudent />} />
           <Route path="courses" element={<MyCourses />} />
           <Route path="earnings" element={<Earnings />} />

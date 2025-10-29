@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AdminAuthProvider } from './context/adminAuthContext';
 
 // Protected Routes
-import AdminProtectedRoutes from './routes/AdminProtectedRoutes';
+// import AdminProtectedRoutes from './routes/AdminProtectedRoutes';
 
 // Admin Layout
 import AdminLayout from './layouts/AdminLayout';
@@ -42,9 +42,9 @@ const AdminApp = () => {
         {/* Protected routes with layout */}
         <Route 
           element={
-            <AdminProtectedRoutes role="admin">
+            // <AdminProtectedRoutes role="admin">
               <AdminLayout />
-            </AdminProtectedRoutes>
+            // </AdminProtectedRoutes>
           }
         >
           <Route index element={<Dashboard />} />

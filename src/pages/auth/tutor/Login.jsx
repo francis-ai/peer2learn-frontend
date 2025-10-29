@@ -13,10 +13,10 @@ import {
   School as TutorIcon
 } from '@mui/icons-material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // ✅ Add this
 import { useTutorAuth } from '../../../context/tutorAuthContext';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -26,6 +26,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { setTutor } = useTutorAuth();
+  const navigate = useNavigate(); // ✅ Use navigate hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,19 +46,23 @@ export default function Login() {
       );
 
       const { tutor, token } = response.data;
-      console.log('Login success:', tutor);
+      console.log('✅ Login success:', tutor);
 
       localStorage.setItem('tutor', JSON.stringify(tutor));
       localStorage.setItem('tutorToken', token);
       setTutor(tutor);
 
-      // ✅ Force redirect (handles devices where navigate fails)
-      setTimeout(() => {
-        window.location.href = '/tutor';
-      }, 300);
+      // ✅ Clean redirect using React Router
+      navigate('/tutor/dashboard', { replace: true });
 
+      // 👇 fallback in case React navigation fails
+      setTimeout(() => {
+        if (!window.location.pathname.includes('/tutor/dashboard')) {
+          window.location.href = '/tutor/dashboard';
+        }
+      }, 800);
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('❌ Login error:', err);
       const message = err.response?.data?.message || 'Login failed. Please try again.';
       setError(message);
     } finally {
@@ -83,11 +88,8 @@ export default function Login() {
         </Typography>
         <Paper elevation={3} sx={{ p: 3, mt: 3, width: '100%' }}>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+
             <TextField
               margin="normal"
               required
@@ -105,6 +107,7 @@ export default function Login() {
                 ),
               }}
             />
+
             <TextField
               margin="normal"
               required
@@ -121,16 +124,14 @@ export default function Login() {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                       {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
+
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <FormControlLabel
                 control={
@@ -146,6 +147,7 @@ export default function Login() {
                 Forgot password?
               </Link>
             </Stack>
+
             <Button
               type="submit"
               fullWidth
@@ -155,6 +157,7 @@ export default function Login() {
             >
               {loading ? <CircularProgress size={24} /> : 'Sign In'}
             </Button>
+
             <Grid container justifyContent="center">
               <Grid item>
                 <Link href="/tutor/register" variant="body2">

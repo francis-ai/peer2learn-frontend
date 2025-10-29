@@ -59,10 +59,13 @@ export default function Login() {
       localStorage.setItem('adminToken', token);
       setAdmin(admin);
 
-      // ✅ Force redirect for reliability across browsers
+      navigate('/admin', { replace: true });
+      // 👇 fallback in case React navigation fails
       setTimeout(() => {
-        navigate('/admin');
-      }, 300);
+        if (!window.location.pathname.includes('/admin')) {
+          window.location.href = '/admin';
+        }
+      }, 800);
 
     } catch (err) {
       console.error('Login error:', err);

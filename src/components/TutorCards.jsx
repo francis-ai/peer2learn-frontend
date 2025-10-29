@@ -6,7 +6,7 @@ import {
   Avatar,
   Button,
   CircularProgress,
-  Chip,
+  // Chip,
   Snackbar,
   Alert,
   Grid,
@@ -222,7 +222,7 @@ function TutorCard({ tutor, handleApply, theme }) {
           "Helping you achieve academic excellence with a personalized approach."}
       </Typography>
 
-      <Chip
+      {/* <Chip
         label={`₦${Number(tutor.price).toLocaleString()}`}
         sx={{
           mt: 2,
@@ -230,7 +230,7 @@ function TutorCard({ tutor, handleApply, theme }) {
           color: theme.palette.primary.main,
           fontWeight: 600,
         }}
-      />
+      /> */}
 
       <Button
         variant="contained"
