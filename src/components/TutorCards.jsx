@@ -6,7 +6,6 @@ import {
   Avatar,
   Button,
   CircularProgress,
-  // Chip,
   Snackbar,
   Alert,
   Grid,
@@ -15,16 +14,13 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../context/studentAuthContext";
 import { School, ArrowForward } from "@mui/icons-material";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function LandingTutors() {
-  const { student } = useAuth();
-  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -41,6 +37,7 @@ export default function LandingTutors() {
       try {
         const res = await axios.get(`${BASE_URL}/api/admin/landing-tutors`);
         setTutors(res.data || []);
+       
       } catch (err) {
         console.error("❌ Failed to fetch landing tutors:", err);
         setSnackbar({
@@ -54,17 +51,9 @@ export default function LandingTutors() {
     })();
   }, []);
 
-  const handleApply = (e) => {
-    if (!student) {
-      e.preventDefault();
-      setSnackbar({
-        open: true,
-        message: "Please login to apply for courses.",
-        severity: "warning",
-      });
-      setTimeout(() => navigate("/login"), 2000);
-    }
-  };
+  const randomTutors = tutors
+    .sort(() => 0.5 - Math.random()) // shuffle
+    .slice(0, 3); // take first 3
 
   if (loading)
     return (
@@ -127,21 +116,22 @@ export default function LandingTutors() {
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          {tutors.slice(0, 6).map((tutor) => (
+          {randomTutors.map((tutor) => (
             <Box key={tutor.id} sx={{ scrollSnapAlign: "start" }}>
-              <TutorCard tutor={tutor} handleApply={handleApply} theme={theme} />
+              <TutorCard tutor={tutor} theme={theme} />
             </Box>
           ))}
         </Box>
       ) : (
         <Grid container spacing={4} justifyContent="center">
-          {tutors.slice(0, 6).map((tutor) => (
+          {randomTutors.map((tutor) => (
             <Grid item key={tutor.id} xs={12} sm={6} md={4} lg={3}>
-              <TutorCard tutor={tutor} handleApply={handleApply} theme={theme} />
+              <TutorCard tutor={tutor} theme={theme} />
             </Grid>
           ))}
         </Grid>
       )}
+
 
       {/* Snackbar */}
       <Snackbar
@@ -207,7 +197,7 @@ function TutorCard({ tutor, handleApply, theme }) {
         {tutor.tutor_name}
       </Typography>
       <Typography variant="body2" sx={{ color: "#64748b", mb: 1 }}>
-        {tutor.category || "General Tutor"}
+        {tutor.name || "General Tutor"}
       </Typography>
 
       <Typography
@@ -216,27 +206,22 @@ function TutorCard({ tutor, handleApply, theme }) {
           color: "#64748b",
           fontSize: "0.9rem",
           minHeight: 45,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         }}
       >
         {tutor.course_description ||
           "Helping you achieve academic excellence with a personalized approach."}
       </Typography>
 
-      {/* <Chip
-        label={`₦${Number(tutor.price).toLocaleString()}`}
-        sx={{
-          mt: 2,
-          backgroundColor: alpha(theme.palette.primary.main, 0.08),
-          color: theme.palette.primary.main,
-          fontWeight: 600,
-        }}
-      /> */}
 
       <Button
         variant="contained"
         component={Link}
-        to="/enroll"
-        onClick={handleApply}
+        to={`/tutor-details/${tutor.id}`}  // <-- fixed here
         endIcon={<ArrowForward />}
         fullWidth
         sx={{
@@ -256,6 +241,7 @@ function TutorCard({ tutor, handleApply, theme }) {
       >
         Enroll Now
       </Button>
+
     </Card>
   );
 }

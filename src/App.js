@@ -21,7 +21,8 @@ import Home from './pages/public/Home';
 import Faqs from './pages/public/Faq';
 import Terms from './pages/public/Term';
 import Help from './pages/public/HelpCenter';
-import Privacy from './pages/public/PrivacyPolicy'
+import Privacy from './pages/public/PrivacyPolicy';
+import TutorDetails from "./components/TutorDetails";
 
 // Dashboards
 import StudentDashboard from './pages/student/Dashboard';
@@ -37,7 +38,6 @@ import Schedule from './pages/student/Schedule';
 import Assignment from './pages/student/Assignment';
 import SocialLoginSuccess from './pages/SocialLoginSuccess';
 import PaymentSuccess from './pages/student/PaymentSuccess';
-
 
 
 import TutorApp from './TutorApp';
@@ -63,6 +63,7 @@ function App() {
         <Route path="/help" element={<PublicLayout><Help /></PublicLayout>} />
         <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
         <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
+        <Route path="/tutor-details/:id" element={<PublicLayout><TutorDetails /></PublicLayout>} />
         <Route path="/social-login-success" element={<PublicLayout><SocialLoginSuccess /></PublicLayout>} />
 
         {/* Dashboards without Navbar/Footer (can have their own layout later) */}
