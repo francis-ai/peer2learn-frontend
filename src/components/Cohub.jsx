@@ -4,7 +4,7 @@ import {
   Typography,
   Card,
   CardContent,
-  Chip,
+  // Chip,
   CircularProgress,
   Container,
   useTheme
@@ -24,7 +24,14 @@ export default function CohubShowcase() {
       try {
         const res = await fetch(`${BASE_URL}/api/admin/landing-cohubs`);
         const data = await res.json();
-        setCohubs(Array.isArray(data) ? data.slice(0, 6) : []);
+        if (Array.isArray(data)) {
+          const shuffled = data.sort(() => 0.5 - Math.random());
+          // Pick only 3 cards
+          setCohubs(shuffled.slice(0, 3));
+        } else {
+          setCohubs([]);
+        }
+
       } catch (err) {
         console.error("Error fetching cohubs:", err);
       } finally {
@@ -150,7 +157,7 @@ export default function CohubShowcase() {
                     }}
                   />
 
-                  <Chip
+                  {/* <Chip
                     label="Verified"
                     size="small"
                     sx={{
@@ -163,7 +170,7 @@ export default function CohubShowcase() {
                       fontSize: "0.7rem",
                       boxShadow: "0 3px 10px rgba(0,0,0,0.2)",
                     }}
-                  />
+                  /> */}
                 </Box>
 
                 {/* Details */}
