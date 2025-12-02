@@ -48,6 +48,8 @@ export default function CohubShowcase() {
       </Box>
     );
 
+
+    
   if (cohubs.length === 0)
     return (
       <Box textAlign="center" py={10}>
