@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import { 
   Person as PersonIcon,
+  Phone as PhoneIcon,
   Email as EmailIcon,
   Lock as LockIcon,
   School as TutorIcon
@@ -18,6 +19,7 @@ export default function Register() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: ''
   });
@@ -30,6 +32,8 @@ export default function Register() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +50,7 @@ export default function Register() {
       const response = await axios.post(`${BASE_URL}/api/auth/tutors/register`, {
         name: formData.name,
         email: formData.email,
+        phone: formData.phone,
         password: formData.password
       });
 
@@ -119,6 +124,22 @@ export default function Register() {
                 startAdornment: (
                   <InputAdornment position="start">
                     <EmailIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Phone Number"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PhoneIcon />
                   </InputAdornment>
                 ),
               }}

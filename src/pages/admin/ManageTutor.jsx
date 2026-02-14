@@ -327,7 +327,8 @@ export default function ManageTutor() {
               <Typography><strong>Email:</strong> {selectedTutor.email}</Typography>
               <Typography><strong>Address:</strong> {selectedTutor.address || 'N/A'}</Typography>
               <Typography><strong>Location:</strong> {selectedTutor.location || 'N/A'}</Typography>
-              <Typography><strong>Phone:</strong> {selectedTutor.phone || 'N/A'}</Typography>
+              <Typography><strong>Phone Number:</strong> {selectedTutor.phone || 'N/A'}</Typography>
+              <Typography><strong>WhatsApp Number:</strong> {selectedTutor.whatsapp_number || 'N/A'}</Typography>
               <Typography><strong>Degree:</strong> {selectedTutor.degree || 'N/A'}</Typography>
               <Typography><strong>Bio:</strong> {selectedTutor.bio || 'N/A'}</Typography>
               <Typography><strong>Gender:</strong> {selectedTutor.gender || 'N/A'}</Typography>

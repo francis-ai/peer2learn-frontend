@@ -41,6 +41,7 @@ export default function Profile() {
     education: '',
     bio: '',
     gender: '',
+    whatsapp_number: '',
     status: '',
     verification_status: ''
   });
@@ -59,6 +60,7 @@ export default function Profile() {
         education: data.degree || '',
         bio: data.bio || '',
         gender: data.gender || '',
+        whatsapp_number: data.whatsapp_number || '',
         status: data.status || '',
         verification_status: data.verification_status || '',
       });
@@ -136,6 +138,7 @@ export default function Profile() {
       payload.append("degree", formData.education);
       payload.append("bio", formData.bio);
       payload.append("gender", formData.gender);
+      payload.append("whatsapp_number", formData.whatsapp_number);
       payload.append("location", finalLocation); // ✅ string because tutors table stores location
 
       if (selectedFile) {
@@ -313,9 +316,26 @@ export default function Profile() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Phone"
+                    label="Phone Number"
                     name="phone"
                     value={formData.phone}
+                    onChange={handleInputChange}
+                    disabled={!editMode}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PhoneIcon color={editMode ? "primary" : "disabled"} />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Whatsapp Number"
+                    name="whatsapp_number"
+                    value={formData.whatsapp_number}
                     onChange={handleInputChange}
                     disabled={!editMode}
                     InputProps={{

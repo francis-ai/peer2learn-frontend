@@ -41,6 +41,55 @@ export default function TutorCourses() {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [rejectDialog, setRejectDialog] = useState({ open: false, id: null });
   const [rejectReason, setRejectReason] = useState('');
+  const [editDialog, setEditDialog] = useState({
+    open: false,
+    id: null,
+    course_description: '',
+    price: '',
+    duration: ''
+  });
+
+  const handleEdit = (course) => {
+    setEditDialog({
+      open: true,
+      id: course.tutor_course_id,
+      course_description: course.course_description || '',
+      price: course.price || '',
+      duration: course.duration || ''
+    });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditDialog((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const confirmEdit = async () => {
+    try {
+      await axios.put(`${BASE_URL}/api/admin/tutor-courses/${editDialog.id}`, {
+        course_description: editDialog.course_description,
+        price: Number(editDialog.price),
+        duration: editDialog.duration
+      });
+
+      // Update the table locally
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.tutor_course_id === editDialog.id
+            ? { ...c, ...editDialog }
+            : c
+        )
+      );
+
+      setSnackbar({ open: true, message: 'Course updated successfully', severity: 'success' });
+      setEditDialog({ open: false, id: null, course_description: '', price: '', duration: '' });
+    } catch (err) {
+      console.error(err);
+      setSnackbar({ open: true, message: 'Failed to update course', severity: 'error' });
+    }
+  };
+
+
 
   const rowsPerPage = 5;
 
@@ -167,7 +216,7 @@ export default function TutorCourses() {
                     <TableCell>Price</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Show on Landing</TableCell>
-                    <TableCell align="right">Action</TableCell>
+                    <TableCell align="right"> Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -226,6 +275,16 @@ export default function TutorCourses() {
                               >
                                 Reject
                               </Button>
+
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                onClick={() => handleEdit(c)}
+                              >
+                                Edit
+                              </Button>
+
                             </Stack>
                           ) : (
                             '—'
@@ -268,6 +327,46 @@ export default function TutorCourses() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Edit Course Dialog */}
+      <Dialog
+        open={editDialog.open}
+        onClose={() => setEditDialog({ open: false, id: null, course_description: '', price: '', duration: '' })}
+      >
+        <DialogTitle>Edit Course</DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+          <TextField
+            label="Course Description"
+            name="course_description"
+            value={editDialog.course_description}
+            onChange={handleEditChange}
+            multiline
+            rows={3}
+          />
+          <TextField
+            label="Price"
+            name="price"
+            type="number"
+            value={editDialog.price}
+            onChange={handleEditChange}
+          />
+          <TextField
+            label="Duration"
+            name="duration"
+            value={editDialog.duration}
+            onChange={handleEditChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialog({ open: false, id: null, course_description: '', price: '', duration: '' })}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={confirmEdit}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
 
       {/* Snackbar */}
       <Snackbar
