@@ -15,7 +15,7 @@ import {
   Alert,
   // Stack
 } from '@mui/material';
-import { Person, Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Person, Phone, Email, Lock, Visibility, VisibilityOff } from '@mui/icons-material';
 import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -23,6 +23,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,6 +58,7 @@ export default function Register() {
       const res = await axios.post(`${BASE_URL}/api/auth/students/register`, {
         name,
         email,
+        phone_number: phoneNumber,
         password,
       });
 
@@ -156,6 +158,25 @@ export default function Register() {
               sx={{ mb: 3, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               required
               type="email"
+            />
+
+            <TextField
+              fullWidth
+              label="Phone Number"
+              variant="outlined"
+              margin="normal"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Phone color="action" />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+              required
+              type="tel"
             />
 
             <TextField
