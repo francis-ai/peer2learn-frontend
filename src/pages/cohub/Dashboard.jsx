@@ -26,8 +26,6 @@ const Dashboard = () => {
 
   // ✅ Fetch office images
   useEffect(() => {
-    if (!cohub?.id) return;
-
     const fetchOfficeImages = async () => {
       try {
         const res = await axios.get(

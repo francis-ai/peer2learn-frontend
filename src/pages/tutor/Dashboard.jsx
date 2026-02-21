@@ -75,13 +75,13 @@ export default function Dashboard() {
     };
 
     fetchDashboardStats();
-  }, [tutor.id]);
+  }, [tutor?.id]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h5" fontWeight="bold">
-          Dashboard Overview, {tutor.name}
+          Dashboard Overview, {tutor?.name}
         </Typography>
       </Box>
 

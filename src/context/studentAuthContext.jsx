@@ -5,7 +5,6 @@ const AuthContext = createContext();
 export const StudentAuthProvider = ({ children }) => {
   const [student, setStudentState] = useState(null);
 
-  // Load student from localStorage safely
   useEffect(() => {
     try {
       const storedStudent = localStorage.getItem("student");
@@ -14,15 +13,14 @@ export const StudentAuthProvider = ({ children }) => {
         const parsed = JSON.parse(storedStudent);
         setStudentState(parsed);
       } else {
-        localStorage.removeItem("student"); // clean bad value
+        localStorage.removeItem("student");
       }
     } catch (err) {
       console.error("Failed to parse student from localStorage:", err);
-      localStorage.removeItem("student"); // clean up if corrupted
+      localStorage.removeItem("student");
     }
   }, []);
 
-  // Wrap setStudent to also save to localStorage
   const setStudent = (studentData) => {
     setStudentState(studentData);
     if (studentData) {
@@ -32,14 +30,15 @@ export const StudentAuthProvider = ({ children }) => {
     }
   };
 
-  // Fetch full student profile by ID
   const fetchStudentProfile = async (id, token) => {
     try {
       const res = await fetch(`/api/profile/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch profile");
+
       const data = await res.json();
+
       setStudent({
         id: data.id,
         email: data.email,

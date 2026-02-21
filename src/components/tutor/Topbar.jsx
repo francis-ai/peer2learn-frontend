@@ -18,15 +18,14 @@ import {
   AccountCircle,
   ArrowDropDown
 } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTutorAuth } from '../../context/tutorAuthContext'; 
 
 const TutorTopbar = ({ onMenuClick, drawerWidth = 0 }) => {
-  const { tutor } = useTutorAuth();
+  const { tutor, setTutor } = useTutorAuth();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -38,8 +37,9 @@ const TutorTopbar = ({ onMenuClick, drawerWidth = 0 }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('tutorToken');
-    localStorage.removeItem('tutor'); // if you're storing user info too
-    navigate('/tutor/login');
+    localStorage.removeItem('tutor');
+
+    setTutor(null);
   };
 
   return (
@@ -131,7 +131,7 @@ const TutorTopbar = ({ onMenuClick, drawerWidth = 0 }) => {
                 color: theme.palette.text.primary
               }}
             >
-              {tutor.name}
+              {tutor?.name}
             </Typography>
             <ArrowDropDown sx={{ 
               color: theme.palette.text.secondary,

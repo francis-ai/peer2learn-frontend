@@ -20,10 +20,10 @@ import {
   Settings,
   Logout,
   Mail
-  
 } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/peer2learn.png';
+import { useTutorAuth } from "../../context/tutorAuthContext";
 
 const SidebarDrawer = styled(Drawer)(({ theme }) => ({
   width: 280,
@@ -43,22 +43,22 @@ const menuItems = [
   { text: 'Students', icon: <People />, path: '/tutor/students' },
   { text: 'Schedule', icon: <CalendarMonth />, path: '/tutor/schedule' },
   { text: 'Earnings', icon: <Payments />, path: '/tutor/earnings' },
-  { text: 'Messages', icon: <Payments />, path: '/tutor/messages' },
+  { text: 'Messages', icon: <Chat />, path: '/tutor/messages' }, // fixed icon
   { text: 'Assignment', icon: <School />, path: '/tutor/assignment' },
   { text: 'Reviews', icon: <Chat />, path: '/tutor/reviews' },
   { text: 'Notification', icon: <Mail />, path: '/tutor/notification' }
 ];
 
-  
-
 const TutorSidebar = ({ open, onClose, isMobile }) => {
-  const navigate = useNavigate();
+  const { setTutor } = useTutorAuth();   // ✅ Get setTutor
 
   const handleLogout = () => {
     localStorage.removeItem('tutorToken');
-    localStorage.removeItem('tutor'); // if you're storing user info too
-    navigate('/tutor/login');
+    localStorage.removeItem('tutor');
+
+    setTutor(null);
   };
+
   return (
     <SidebarDrawer
       variant={isMobile ? 'temporary' : 'persistent'}
@@ -71,11 +71,10 @@ const TutorSidebar = ({ open, onClose, isMobile }) => {
           px: 3, 
           py: 4, 
           backgroundColor: '#000', 
-          display: { xs: 'none', md: 'flex' }, // Hide on mobile, show on desktop
+          display: { xs: 'none', md: 'flex' },
           alignItems: 'center'
         }}
       >
-        {/* Logo Section */}
         <Box 
           component={Link} 
           to="/tutor/" 
@@ -84,14 +83,13 @@ const TutorSidebar = ({ open, onClose, isMobile }) => {
             alignItems: 'center',
             textDecoration: 'none',
             gap: 1,
-            zIndex: 10,
             mx: "auto"
           }}
         >
           <img 
             src={Logo} 
             alt="Logo" 
-            style={{ height: '90px', objectFit: 'contain', mx: 'auto' }} 
+            style={{ height: '90px', objectFit: 'contain' }} 
           />
         </Box>
       </Toolbar>
@@ -102,9 +100,10 @@ const TutorSidebar = ({ open, onClose, isMobile }) => {
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
             <ListItemButton 
-            component={ Link }
-            to={item.path}
-            sx={{ borderRadius: 1, mb: 0.5 }}>
+              component={Link}
+              to={item.path}
+              sx={{ borderRadius: 1, mb: 0.5 }}
+            >
               <ListItemIcon sx={{ minWidth: 40 }}>
                 {item.icon}
               </ListItemIcon>
@@ -122,14 +121,16 @@ const TutorSidebar = ({ open, onClose, isMobile }) => {
         <List>
           <ListItem disablePadding>
             <ListItemButton 
-            component={Link}
-            to="/tutor/profile-settings">
+              component={Link}
+              to="/tutor/profile-settings"
+            >
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <Settings />
               </ListItemIcon>
               <ListItemText primary="Profile Settings" />
             </ListItemButton>
           </ListItem>
+
           <ListItem disablePadding>
             <ListItemButton onClick={handleLogout}>
               <ListItemIcon sx={{ minWidth: 40 }}>

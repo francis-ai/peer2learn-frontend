@@ -25,8 +25,9 @@ import {
   HowToReg,
   RequestPage,
 } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from '../../assets/images/peer2learn.png';
+import { useAdminAuth } from "../../context/adminAuthContext";
 
 const SidebarDrawer = styled(Drawer)(({ theme }) => ({
   width: 280,
@@ -59,12 +60,13 @@ const menuItems = [
 ];
 
 export default function AdminSidebar({ open, onClose, isMobile }) {
-   const navigate = useNavigate();
+  const { setAdmin } = useAdminAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('cohubToken');
-    localStorage.removeItem('cohub'); // clear stored cohub user info
-    navigate('/admin/login');
+    localStorage.removeItem('tutorToken');
+    localStorage.removeItem('tutor');
+
+    setAdmin(null);
   };
 
   return (

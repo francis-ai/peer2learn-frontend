@@ -41,6 +41,7 @@ const CohubApp = () => {
           }
         >
           <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<OurUser />} />
           <Route path="payments" element={<Payments />} />
           <Route path="withdrawal" element={<Withdrawal />} />
