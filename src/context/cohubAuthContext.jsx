@@ -1,12 +1,13 @@
 // src/context/CohubAuthContext.jsx
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const CohubAuthProvider = ({ children }) => {
   const [cohub, setCohub] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     try {
@@ -21,12 +22,21 @@ export const CohubAuthProvider = ({ children }) => {
 
   }, []);
 
-  // ✅ Redirect automatically when tutor becomes null
+  // ✅ Redirect automatically when cohub becomes null
   useEffect(() => {
     if (cohub === null) {
-      navigate('/cohub/login', { replace: true });
+      const publicAuthRoutes = [
+        '/cohub/login',
+        '/cohub/register',
+        '/cohub/forgot-password',
+      ];
+      // Also allow reset-password with token param
+      const isResetPassword = location.pathname.startsWith('/cohub/reset-password');
+      if (!publicAuthRoutes.includes(location.pathname) && !isResetPassword) {
+        navigate('/cohub/login', { replace: true });
+      }
     }
-  }, [cohub, navigate]);
+  }, [cohub, navigate, location]);
 
   return (
     <AuthContext.Provider value={{ cohub, setCohub }}>

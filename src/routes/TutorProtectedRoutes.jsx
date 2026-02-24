@@ -1,25 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useTutorAuth } from '../context/tutorAuthContext';
+import React, { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useTutorAuth } from "../context/tutorAuthContext";
 
-const TutorProtectedRoutes = ({ children }) => {
-  const { tutor } = useTutorAuth();
-  const [isLoading, setIsLoading] = useState(true);
+const TutorProtectedRoutes = () => {
+  const { tutor, loading } = useContext(useTutorAuth);
 
-  useEffect(() => {
-    // Delay to allow localStorage/context hydration
-    const timeout = setTimeout(() => setIsLoading(false), 100);
-    return () => clearTimeout(timeout);
-  }, []);
+  // Wait until auth is finished loading
+  if (loading) return null;
 
-  if (isLoading) return null;
-
-  const hasToken = localStorage.getItem('token');
-  if (!tutor || !hasToken) {
+  // If no tutor, redirect to login
+  if (!tutor) {
     return <Navigate to="/tutor/login" replace />;
   }
 
-  return children;
+  return <Outlet />;
 };
 
 export default TutorProtectedRoutes;

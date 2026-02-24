@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const TutorAuthContext = createContext();
 
 export const TutorAuthProvider = ({ children }) => {
   const [tutor, setTutor] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const storedTutor = localStorage.getItem('tutor');
@@ -18,12 +19,21 @@ export const TutorAuthProvider = ({ children }) => {
     }
   }, []);
 
-  // ✅ Redirect automatically when tutor becomes null
+  // ✅ Redirect automatically when tutor becomes null, but not on public auth routes
   useEffect(() => {
     if (tutor === null) {
-      navigate('/tutor/login', { replace: true });
+      const publicAuthRoutes = [
+        '/tutor/login',
+        '/tutor/register',
+        '/tutor/forgot-password',
+      ];
+      // Also allow reset-password with token param
+      const isResetPassword = location.pathname.startsWith('/tutor/reset-password');
+      if (!publicAuthRoutes.includes(location.pathname) && !isResetPassword) {
+        navigate('/tutor/login', { replace: true });
+      }
     }
-  }, [tutor, navigate]);
+  }, [tutor, navigate, location]);
 
   return (
     <TutorAuthContext.Provider value={{ tutor, setTutor }}>
