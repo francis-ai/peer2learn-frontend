@@ -1,14 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useTutorAuth } from "../context/tutorAuthContext";
 
 const TutorProtectedRoutes = () => {
-  const { tutor, loading } = useContext(useTutorAuth);
+  const { tutor } = useTutorAuth();
 
-  // Wait until auth is finished loading
-  if (loading) return null;
-
-  // If no tutor, redirect to login
   if (!tutor) {
     return <Navigate to="/tutor/login" replace />;
   }
