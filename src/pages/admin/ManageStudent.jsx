@@ -20,12 +20,19 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
 } from '@mui/material';
 import {
   Search as SearchIcon,
   Verified as VerifiedIcon,
   Block as BlockedIcon,
+  Visibility as VisibilityIcon,
 } from '@mui/icons-material';
+import * as XLSX from 'xlsx';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -35,11 +42,10 @@ export default function ManageStudent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [allModalOpen, setAllModalOpen] = useState(false);
 
   const rowsPerPage = 5;
 
@@ -57,7 +63,7 @@ export default function ManageStudent() {
       );
     });
     setFilteredStudents(filtered);
-    setPage(1); // reset page on search/filter change
+    setPage(1);
   }, [searchTerm, students]);
 
   const fetchStudents = async () => {
@@ -67,11 +73,7 @@ export default function ManageStudent() {
       setStudents(data);
     } catch (err) {
       console.error('Failed to fetch students:', err);
-      setSnackbar({
-        open: true,
-        message: 'Failed to load students.',
-        severity: 'error',
-      });
+      setSnackbar({ open: true, message: 'Failed to load students.', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -79,44 +81,67 @@ export default function ManageStudent() {
 
   const toggleStatus = async (id, currentStatus) => {
     const newStatus = currentStatus === 'active' ? 'flagged' : 'active';
-
     try {
       const res = await fetch(`${BASE_URL}/api/admin/student-status/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to update status');
 
       setStudents((prev) =>
-        prev.map((student) =>
-          student.id === id ? { ...student, status: newStatus } : student
-        )
+        prev.map((student) => (student.id === id ? { ...student, status: newStatus } : student))
       );
-
-      setSnackbar({
-        open: true,
-        message: `Student status updated to ${newStatus}`,
-        severity: 'success',
-      });
+      setSnackbar({ open: true, message: `Student status updated to ${newStatus}`, severity: 'success' });
     } catch (err) {
       console.error(err);
-      setSnackbar({
-        open: true,
-        message: err.message,
-        severity: 'error',
-      });
+      setSnackbar({ open: true, message: err.message, severity: 'error' });
     }
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleCloseSnackbar = () => setSnackbar((prev) => ({ ...prev, open: false }));
+
+  const handleViewStudent = async (id) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${BASE_URL}/api/admin/students/${id}`);
+      const data = await res.json();
+      setSelectedStudent(data);
+      setViewOpen(true);
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Failed to load student details.', severity: 'error' });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
+  const handleCloseView = () => {
+    setViewOpen(false);
+    setSelectedStudent(null);
+  };
+
+  // Open modal to view all students
+  const handleOpenAllModal = () => {
+    setAllModalOpen(true);
+  };
+  const handleCloseAllModal = () => setAllModalOpen(false);
+
+  // Export all students to Excel
+  const handleDownloadExcel = () => {
+    const wsData = students.map((s) => ({
+      ID: s.id,
+      Name: s.name,
+      Email: s.email,
+      Phone: s.phone_number,
+      Status: s.status,
+      'Join Date': s.created_at ? new Date(s.created_at).toLocaleDateString() : 'N/A',
+    }));
+    const ws = XLSX.utils.json_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Students');
+    XLSX.writeFile(wb, 'students.xlsx');
   };
 
   return (
@@ -144,6 +169,12 @@ export default function ManageStudent() {
               }}
               sx={{ flexGrow: 1 }}
             />
+            <Button variant="contained" color="primary" onClick={handleOpenAllModal}>
+              View All
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={handleDownloadExcel}>
+              Download Excel
+            </Button>
           </Stack>
         </CardContent>
       </Card>
@@ -160,10 +191,11 @@ export default function ManageStudent() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Student</TableCell>
-                    <TableCell>Email</TableCell>
+                    <TableCell>Email & Phone number</TableCell>
                     <TableCell>Join Date</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell align="right">Action</TableCell>
+                    <TableCell align="right">View</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -185,21 +217,13 @@ export default function ManageStudent() {
                             <Typography>{student.name || 'N/A'}</Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell>{student.email || 'N/A'}</TableCell>
+                        <TableCell>{student.email || 'N/A'} - {student.phone_number || 'N/A'}</TableCell>
                         <TableCell>
-                          {student.created_at
-                            ? new Date(student.created_at).toLocaleDateString()
-                            : 'N/A'}
+                          {student.created_at ? new Date(student.created_at).toLocaleDateString() : 'N/A'}
                         </TableCell>
                         <TableCell>
                           <Chip
-                            icon={
-                              student.status === 'active' ? (
-                                <VerifiedIcon />
-                              ) : (
-                                <BlockedIcon />
-                              )
-                            }
+                            icon={student.status === 'active' ? <VerifiedIcon /> : <BlockedIcon />}
                             label={student.status || 'N/A'}
                             color={student.status === 'active' ? 'success' : 'warning'}
                             size="small"
@@ -214,6 +238,11 @@ export default function ManageStudent() {
                           >
                             {student.status === 'active' ? 'Flag Account' : 'Activate Account'}
                           </Button>
+                        </TableCell>
+                        <TableCell align="right">
+                          <IconButton color="primary" onClick={() => handleViewStudent(student.id)}>
+                            <VisibilityIcon />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -233,6 +262,63 @@ export default function ManageStudent() {
           </CardContent>
         </Card>
       )}
+
+      {/* View Individual Student Modal */}
+      <Dialog open={viewOpen} onClose={handleCloseView} maxWidth="sm" fullWidth>
+        <DialogTitle>Student Details</DialogTitle>
+        <DialogContent dividers>
+          {selectedStudent ? (
+            <Box>
+              <Typography variant="h6" gutterBottom>{selectedStudent.name}</Typography>
+              <Typography>Email: {selectedStudent.email}</Typography>
+              <Typography>Phone: {selectedStudent.phone_number}</Typography>
+              <Typography>Status: {selectedStudent.status}</Typography>
+              <Typography>Join Date: {selectedStudent.created_at ? new Date(selectedStudent.created_at).toLocaleDateString() : 'N/A'}</Typography>
+            </Box>
+          ) : (
+            <CircularProgress />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseView} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* View All Students Modal */}
+      <Dialog open={allModalOpen} onClose={handleCloseAllModal} maxWidth="lg" fullWidth>
+        <DialogTitle>All Students</DialogTitle>
+        <DialogContent dividers>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Phone</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Join Date</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {students.map((student) => (
+                  <TableRow key={student.id} hover>
+                    <TableCell>{student.id}</TableCell>
+                    <TableCell>{student.name}</TableCell>
+                    <TableCell>{student.email}</TableCell>
+                    <TableCell>{student.phone_number}</TableCell>
+                    <TableCell>{student.status}</TableCell>
+                    <TableCell>{student.created_at ? new Date(student.created_at).toLocaleDateString() : 'N/A'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAllModal} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Snackbar */}
       <Snackbar
