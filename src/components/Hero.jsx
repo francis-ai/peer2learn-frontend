@@ -25,7 +25,7 @@ export default function Hero() {
             {/* ✅ Badges */}
             <BadgeContainer sx={{ mt: { xs: 10, md: 4 } }}>
               <PillBadge>ONLINE CLASSES</PillBadge>
-              <PillBadge sx={{ ml: 1.5 }}>ON-SITE CLASSES</PillBadge>
+              {/* <PillBadge sx={{ ml: 1.5 }}>ON-SITE CLASSES</PillBadge> */}
             </BadgeContainer>
 
             {/* ✅ Heading */}

@@ -48,7 +48,7 @@ export default function StepDeliveryMethod({ formData, setFormData, offices, BAS
             </Button>
           </Grid>
 
-          <Grid item xs={6} sm={4} md={3}>
+          {/* <Grid item xs={6} sm={4} md={3}>
             <Button
               fullWidth
               variant={formData.deliveryMethod === "onsite" ? "contained" : "outlined"}
@@ -68,6 +68,36 @@ export default function StepDeliveryMethod({ formData, setFormData, offices, BAS
             >
               On-Site
             </Button>
+          </Grid> */}
+          <Grid item xs={6} sm={4} md={3}>
+            <Box>
+              <Button
+                fullWidth
+                disabled
+                variant="outlined"
+                startIcon={<LocationOn />}
+                sx={{
+                  py: 3,
+                  fontWeight: "bold",
+                  borderRadius: 3,
+                  opacity: 0.6,
+                }}
+              >
+                On-Site
+              </Button>
+
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  textAlign: "center",
+                  mt: 1,
+                  color: "text.secondary",
+                }}
+              >
+                Feature coming soon
+              </Typography>
+            </Box>
           </Grid>
         </Grid>
       </Box>

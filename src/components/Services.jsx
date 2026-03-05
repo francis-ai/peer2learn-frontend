@@ -32,7 +32,7 @@ const Services = () => {
     },
     {
       title: "Flexible Installment Payments",
-      description: "Pay for classes in parts — starting from as low as ₦80,000.",
+      description: "Enjoy flexible payments starting at ₦80,000.",
       icon: <Payments sx={{ fontSize: 50 }} />,
       color: "#4361ee",
       animation: "fade-up",

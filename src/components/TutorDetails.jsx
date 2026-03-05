@@ -149,11 +149,16 @@ export default function TutorDetails() {
           </Box>
 
           {/* Enroll Button */}
-          <Box textAlign="center">
+          <Box sx={{ textAlign: "center", mt: 3 }}>
             <Button
               variant="contained"
               component={Link}
-              to={`/enroll/${id}`}
+              to="/enroll"
+              state={{
+                courseId: tutor.course_id,
+                tutorId: tutor.id,
+                step: 4
+              }}
               onClick={handleApply}
               size="large"
               sx={{

@@ -1,5 +1,7 @@
 import { Box, Typography, Grid, Link, Divider, IconButton, styled, Container, alpha } from '@mui/material';
 import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
+import IOS from "../assets/images/iOS.jpeg";
+import GooglePlay from "../assets/images/google-play.jpeg";
 import Logo from '../assets/images/peer2learn.png';
 
 export default function Footer() {
@@ -34,7 +36,7 @@ export default function Footer() {
               <strong>Address(Lagos):</strong> No 38 Opebi road, Ikeja, Lagos.
             </FooterText>
             <FooterText>
-              <strong>Address(Abuja):</strong> Plot 104 Emmanuel Adiele Street, off Mike Akhigbe Way, Jabi, Abuja.
+              <strong>Address(Abuja):</strong> Plot 104 Emmanuel Adiele Street, off Mike Akhigbe Way,<br /> Jabi, Abuja.
             </FooterText>
           </Grid>
 
@@ -55,6 +57,36 @@ export default function Footer() {
                 <LinkedIn fontSize="small" />
               </SocialIcon>
             </SocialContainer>
+
+            <Grid item xs={12} md={2} mt={6}>
+              <SocialContainer>
+                <Box sx={{ textAlign: "center" }}>
+                  <img
+                    src={IOS}
+                    alt="Download on the App Store"
+                    style={{ width: 120, marginBottom: 8 }}
+                  />
+                </Box>
+
+                <Box sx={{ textAlign: "center" }}>
+                  <img
+                    src={GooglePlay}
+                    alt="Get it on Google Play"
+                    style={{ width: 140, marginBottom: 8 }}
+                  />
+                </Box>
+              </SocialContainer>
+            </Grid>
+            <span
+              style={{
+                display: "block",
+                textAlign: "center",
+                fontSize: "1rem",
+                color: "#606060",
+              }}
+            >
+              Coming Soon
+            </span>
           </Grid>
         </Grid>
 

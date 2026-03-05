@@ -19,6 +19,7 @@ import Logout from './pages/student/Logout';
 // Public Pages
 import Home from './pages/public/Home';
 import Faqs from './pages/public/Faq';
+import Contact from './pages/public/Contact';
 import Terms from './pages/public/Term';
 import Help from './pages/public/HelpCenter';
 import Privacy from './pages/public/PrivacyPolicy';
@@ -59,6 +60,7 @@ function App() {
         {/* Public Routes with Navbar and Footer */}
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/faqs" element={<PublicLayout><Faqs /></PublicLayout>} />
+        <Route path="/contact-us" element={<PublicLayout><Contact /></PublicLayout>} />
         <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
         <Route path="/help" element={<PublicLayout><Help /></PublicLayout>} />
         <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />

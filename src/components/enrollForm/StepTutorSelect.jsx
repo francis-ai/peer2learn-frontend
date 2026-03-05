@@ -46,7 +46,7 @@ export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
       </Typography>
       <Typography color="text.secondary" textAlign="center">
         {formData.deliveryMethod === "online"
-          ? "Tutors available for online sessions (50% discount applied)"
+          ? "Tutors available for online sessions"
           : "Tutors available for on-site sessions"}
       </Typography>
 
@@ -60,10 +60,12 @@ export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
         ) : (
           tutors.map((item) => {
             const isSelected = formData.selectedTutor === item.tutor_course_id;
-            const displayPrice =
-              formData.deliveryMethod === "online"
-                ? `${parseInt(item.price / 2, 10).toLocaleString()} (50% off)`
-                : parseInt(item.price, 10).toLocaleString();
+            // const displayPrice =
+            //   formData.deliveryMethod === "online"
+            //     ? `${parseInt(item.price / 2, 10).toLocaleString()} (50% off)`
+            //     : parseInt(item.price, 10).toLocaleString();
+
+            const displayPrice = parseInt(item.price, 10).toLocaleString();
 
             return (
               <Grid item xs={12} sm={6} md={4} key={item.tutor_course_id}>
@@ -124,7 +126,7 @@ export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         ₦{displayPrice}
-                        {formData.deliveryMethod === "online" && (
+                        {/* {formData.deliveryMethod === "online" && (
                           <span
                             style={{
                               textDecoration: "line-through",
@@ -134,7 +136,7 @@ export default function StepTutorSelect({ tutors, formData, onSelectTutor }) {
                           >
                             ₦{parseInt(item.price, 10).toLocaleString()}
                           </span>
-                        )}
+                        )} */}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         📍 {item.location}

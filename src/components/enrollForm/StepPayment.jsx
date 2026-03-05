@@ -26,8 +26,12 @@ export default function StepPayment({
   setSnackbar,
   onSuccess,
 }) {
-  const getAdjustedPrice = (price) =>
-    formData.deliveryMethod === "online" ? Math.floor(Number(price || 0) / 2) : Number(price || 0);
+  // const getAdjustedPrice = (price) =>
+  //   formData.deliveryMethod === "online"
+  //     ? Math.floor(Number(price || 0) / 2)
+  //     : Number(price || 0);
+
+  const getAdjustedPrice = (price) => Number(price || 0);
 
   const handleSubmit = async () => {
     try {
@@ -85,9 +89,23 @@ export default function StepPayment({
               email: student.email,
               name: student.name,
             })
-            .then(() => {
+            .then((res) => {
+            if (res.data.success) {
+              setSnackbar({
+                open: true,
+                message: res.data.message || "Enrollment successful!",
+                severity: "success",
+              });
+
               onSuccess && onSuccess();
-            })
+            } else {
+              setSnackbar({
+                open: true,
+                message: res.data.message || "Verification failed.",
+                severity: "error",
+              });
+            }
+          })
             .catch((error) => {
               console.error("Payment verification error:", error);
               setSnackbar({
@@ -123,13 +141,14 @@ export default function StepPayment({
           <strong>Tutor:</strong> {selectedTutorCourse?.tutor_name || "Not selected"}
         </Typography>
         <Typography>
-          <strong>Delivery:</strong>{" "}
-          {formData.deliveryMethod === "online" ? "Online (50% discount)" : "On-Site"}
+          <strong>Mode of Learning:</strong>{" "}
+          {/* {formData.deliveryMethod === "online" ? "Online (50% discount)" : "On-Site"} */}
+          {formData.deliveryMethod === "online" ? "Online" : "On-Site"}
         </Typography>
         <Divider sx={{ my: 2 }} />
         <Typography variant="h6">
           Total: ₦{getAdjustedPrice(selectedCourse?.price).toLocaleString()}
-          {formData.deliveryMethod === "online" && (
+          {/* {formData.deliveryMethod === "online" && (
             <span
               style={{
                 textDecoration: "line-through",
@@ -140,7 +159,7 @@ export default function StepPayment({
             >
               ₦{Number(selectedCourse?.price || 0).toLocaleString()}
             </span>
-          )}
+          )} */}
         </Typography>
       </Box>
 
