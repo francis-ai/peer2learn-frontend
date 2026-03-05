@@ -1,514 +1,3 @@
-// // import { useState, useEffect } from 'react';
-// // import { Link, useLocation, useNavigate } from 'react-router-dom';
-// // import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemButton, ListItemText, Box, Typography, Divider, Button, alpha, useTheme, Menu, MenuItem } from '@mui/material';
-// // import MenuIcon from '@mui/icons-material/Menu';
-// // import CloseIcon from '@mui/icons-material/Close';
-// // import AccountCircle from '@mui/icons-material/AccountCircle';
-// // import { useAuth } from '../context/studentAuthContext';
-// // import Logo from '../assets/images/peer2learn.png';
-// // import axios from 'axios';
-
-// // const BASE_URL = process.env.REACT_APP_BASE_URL;
-
-// // export default function Navbar() {
-// //   const { student } = useAuth();
-// //   const studentId = student?.id;
-// //   const [name, setName] = useState("");
-// //   const [mobileOpen, setMobileOpen] = useState(false);
-// //   const [scrolled, setScrolled] = useState(false);
-// //   const [anchorEl, setAnchorEl] = useState(null); // profile menu
-// //   const [loginAnchorEl, setLoginAnchorEl] = useState(null); // login dropdown%
-// //   const location = useLocation();
-// //   const theme = useTheme();
-// //   const navigate = useNavigate();
-
-// //   useEffect(() => {
-// //     if (!studentId) return;
-// //     axios.get(`${BASE_URL}/api/students/profile/${studentId}`)
-// //       .then(res => setName(res.data.name || ""))
-// //       .catch(err => console.error(err));
-// //   }, [studentId]);
-
-// //   useEffect(() => {
-// //     const onScroll = () => setScrolled(window.scrollY > 10);
-// //     window.addEventListener('scroll', onScroll);
-// //     return () => window.removeEventListener('scroll', onScroll);
-// //   }, []);
-
-// //   useEffect(() => setMobileOpen(false), [location]);
-
-// //   const navItems = [
-// //     { path: '/dashboard', label: 'Dashboard' },
-// //     { path: '/my-classes', label: 'Classes' },
-// //     { path: '/payment', label: 'Payment' },
-// //     { path: '/reviews', label: 'Reviews' },
-// //     { path: '/messages', label: 'Messages' },
-// //     { path: '/notifications', label: 'Notifications' },
-// //     { path: '/profile', label: 'Profile' },
-// //   ];
-
-// //   const loginItems = [
-// //     { label: 'Login as Student', path: '/login' },
-// //     { label: 'Login as Tutor', path: '/tutor/login' },
-// //   ];
-
-// //   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
-// //   const handleProfileMenu = e => setAnchorEl(e.currentTarget);
-// //   const handleProfileClose = () => setAnchorEl(null);
-// //   const handleLoginMenu = e => setLoginAnchorEl(e.currentTarget);
-// //   const handleLoginClose = () => setLoginAnchorEl(null);
-
-// //   const desktopAuth = () => student ? (
-// //     <>
-// //       <IconButton onClick={handleProfileMenu} sx={{ p: 0 }}>
-// //         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 1 }}>
-// //           <AccountCircle sx={{ fontSize: 40, color: theme.palette.text.primary }} />
-// //           <Typography fontWeight={500} sx={{ color: theme.palette.text.primary }}>{name || student.name || "Student"}</Typography>
-// //         </Box>
-// //       </IconButton>
-// //       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleProfileClose}
-// //         PaperProps={{ elevation: 0, sx: { mt: 1.5, filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))', '&:before': { content: '""', display: 'block', position: 'absolute', top: 0, right: 14, width: 10, height: 10, bgcolor: 'background.paper', transform: 'translateY(-50%) rotate(45deg)' }}}}>
-// //         <MenuItem onClick={() => { handleProfileClose(); navigate('/profile'); }}>Profile</MenuItem>
-// //         <Divider />
-// //         <MenuItem onClick={() => { handleProfileClose(); navigate('/logout'); }}>Logout</MenuItem>
-// //       </Menu>
-// //     </>
-// //   ) : (
-// //     <>
-// //       <Button onClick={handleLoginMenu} variant="text" sx={{ fontWeight: 600, textTransform: 'none' }}>Login</Button>
-// //       <Menu anchorEl={loginAnchorEl} open={Boolean(loginAnchorEl)} onClose={handleLoginClose}>
-// //         {loginItems.map(item => <MenuItem key={item.path} onClick={() => { handleLoginClose(); navigate(item.path); }}>{item.label}</MenuItem>)}
-// //       </Menu>
-// //       <Button component={Link} to="/register" variant="contained" sx={{ ml: 1, fontWeight: 600, textTransform: 'none', background: 'linear-gradient(90deg,#3a86ff,#4361ee)', '&:hover': { background: 'linear-gradient(90deg,#4361ee,#3a0ca3)' }}}>Get Started</Button>
-// //     </>
-// //   );
-
-// //   const mobileAuth = () => student ? (
-// //     <>
-// //       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-// //         <AccountCircle sx={{ fontSize: 48, color: theme.palette.text.primary }} />
-// //         <Typography variant="subtitle1" fontWeight={600}>{name || student.name || "Student"}</Typography>
-// //       </Box>
-// //       <Button component={Link} to="/profile" fullWidth variant="outlined" sx={{ mb: 1 }}>Profile</Button>
-// //       <Button fullWidth variant="contained" sx={{ mb: 1, background: 'linear-gradient(90deg,#3a86ff,#4361ee)'}} onClick={() => navigate('/logout')}>Logout</Button>
-// //     </>
-// //   ) : (
-// //     <>
-// //       {loginItems.map(item => <Button key={item.path} fullWidth variant="contained" sx={{ mb: 1, background: 'linear-gradient(90deg,#3a86ff,#4361ee)'}} onClick={() => { handleDrawerToggle(); navigate(item.path); }}>{item.label}</Button>)}
-// //       <Button component={Link} to="/register" fullWidth variant="contained" sx={{ mb: 1, background: 'linear-gradient(90deg,#3a86ff,#4361ee)'}}>Get Started</Button>
-// //     </>
-// //   );
-
-// //   return (
-// //     <>
-// //       <AppBar position="fixed" elevation={0} sx={{ background: scrolled ? alpha(theme.palette.background.paper, 0.9) : 'transparent', backdropFilter: scrolled ? 'blur(10px)' : 'none', py: scrolled ? 0.5 : 2, borderBottom: scrolled ? `1px solid ${alpha(theme.palette.divider,0.1)}` : 'none', transition:'all 0.4s cubic-bezier(0.16,1,0.3,1)' }}>
-// //         <Toolbar sx={{ maxWidth:'xl', mx:'auto', width:'90%', justifyContent:'space-between', px:{ xs:2, md:6 }}}>
-// //           <Box component={Link} to="/" sx={{ display:'flex', alignItems:'center', textDecoration:'none', gap:1 }}>
-// //             <img src={Logo} alt="Logo" style={{ height: '65px', objectFit:'contain' }} />
-// //           </Box>
-
-// //           {student && (
-// //             <Box sx={{ display:{ xs:'none', md:'flex' }, position:'absolute', left:'50%', transform:'translateX(-50%)', gap:1 }}>
-// //               {navItems.map(item => (
-// //                 <Button key={item.path} component={Link} to={item.path} sx={{ color: location.pathname===item.path? theme.palette.primary.main : alpha(theme.palette.text.primary,0.9), fontWeight:600, textTransform:'none', px:2, position:'relative', '&::after':{ content:'""', position:'absolute', bottom:4, left:'50%', transform:'translateX(-50%)', width: location.pathname===item.path?'60%':0, height:'3px', backgroundColor:theme.palette.primary.main, borderRadius:'2px', transition:'width 0.3s ease'}}}>{item.label}</Button>
-// //               ))}
-// //             </Box>
-// //           )}
-
-// //           <Box sx={{ display:{ xs:'none', md:'flex' }, gap:1, alignItems:'center' }}>{desktopAuth()}</Box>
-
-// //           <IconButton color="inherit" edge="end" onClick={handleDrawerToggle} sx={{ display:{ md:'none' }, color:theme.palette.text.primary, backgroundColor:alpha(theme.palette.primary.main,0.1), '&:hover':{backgroundColor:alpha(theme.palette.primary.main,0.2)}}}><MenuIcon /></IconButton>
-// //         </Toolbar>
-// //       </AppBar>
-
-// //       <Drawer variant="temporary" open={mobileOpen} onClose={handleDrawerToggle} ModalProps={{ keepMounted:true }} sx={{ display:{ xs:'block', md:'none' }, '& .MuiDrawer-paper':{ width:280, boxSizing:'border-box', background:theme.palette.background.default, borderLeft:`1px solid ${alpha(theme.palette.divider,0.1)}` }}}>
-// //         <Box sx={{ display:'flex', flexDirection:'column', height:'100%', p:2 }}>
-// //           <Box sx={{ display:'flex', justifyContent:'space-between', alignItems:'center', mb:2, pt:1 }}>
-// //             <Box component={Link} to="/" onClick={handleDrawerToggle} sx={{ display:'flex', alignItems:'center', textDecoration:'none', gap:1 }}>
-// //               <img src={Logo} alt="Logo" style={{ height: '70px', objectFit:'contain' }} />
-// //             </Box>
-// //             <IconButton onClick={handleDrawerToggle}><CloseIcon /></IconButton>
-// //           </Box>
-// //           <Divider sx={{ mb:2 }} />
-// //           {student && <List sx={{ flex:1 }}>{navItems.map(item => <ListItem key={item.path} disablePadding sx={{ mb:0.5 }}><ListItemButton component={Link} to={item.path} onClick={handleDrawerToggle} selected={location.pathname===item.path} sx={{ borderRadius:'8px', py:1.5, px:2, '&.Mui-selected':{ backgroundColor: alpha(theme.palette.primary.main,0.1), '& .MuiTypography-root':{ color:theme.palette.primary.main, fontWeight:600}}}}><ListItemText primary={item.label} primaryTypographyProps={{ fontWeight:500 }} /></ListItemButton></ListItem>)}</List>}
-// //           <Box sx={{ display:'flex', flexDirection:'column', gap:1, p:2 }}>{mobileAuth()}</Box>
-// //         </Box>
-// //       </Drawer>
-// //     </>
-// //   );
-// // }
-
-
-
-
-
-// import { useState, useEffect } from "react";
-// import { Link, useLocation, useNavigate } from "react-router-dom";
-// import {
-//   AppBar,
-//   Toolbar,
-//   IconButton,
-//   Drawer,
-//   List,
-//   ListItem,
-//   ListItemButton,
-//   ListItemText,
-//   Box,
-//   Typography,
-//   Divider,
-//   Button,
-//   alpha,
-//   useTheme,
-//   Menu,
-//   MenuItem,
-// } from "@mui/material";
-
-// import MenuIcon from "@mui/icons-material/Menu";
-// import CloseIcon from "@mui/icons-material/Close";
-// import AccountCircle from "@mui/icons-material/AccountCircle";
-
-// import { useAuth } from "../context/studentAuthContext";
-// import Logo from "../assets/images/peer2learn.png";
-
-// export default function Navbar() {
-//   const { student } = useAuth();
-
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const theme = useTheme();
-
-//   const [mobileOpen, setMobileOpen] = useState(false);
-//   const [scrolled, setScrolled] = useState(false);
-
-//   const [anchorEl, setAnchorEl] = useState(null);
-
-//   const open = Boolean(anchorEl);
-
-//   const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
-//   const handleMenuClose = () => setAnchorEl(null);
-
-//   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
-
-//   useEffect(() => {
-//     const handleScroll = () => setScrolled(window.scrollY > 10);
-
-//     window.addEventListener("scroll", handleScroll);
-
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
-
-//   useEffect(() => {
-//     setMobileOpen(false);
-//   }, [location]);
-
-//   /*
-//   =========================
-//   Scroll to Services
-//   =========================
-//   */
-
-//   const scrollToServices = () => {
-//     if (location.pathname !== "/") {
-//       navigate("/", { state: { scrollTo: "services" } });
-//     } else {
-//       const el = document.getElementById("services");
-//       if (el) el.scrollIntoView({ behavior: "smooth" });
-//     }
-//   };
-
-//   /*
-//   =========================
-//   Student Dashboard Links
-//   =========================
-//   */
-
-//   const dashboardLinks = [
-//     { label: "Dashboard", path: "/dashboard" },
-//     { label: "My Classes", path: "/my-classes" },
-//     { label: "Payments", path: "/payment" },
-//     { label: "Reviews", path: "/reviews" },
-//     { label: "Messages", path: "/messages" },
-//     { label: "Notifications", path: "/notifications" },
-//     { label: "Profile", path: "/profile" },
-//   ];
-
-//   /*
-//   =========================
-//   PUBLIC NAV LINKS
-//   =========================
-//   */
-
-//   const publicLinks = [
-//     { label: "Home", path: "/" },
-//     { label: "Services", action: scrollToServices },
-//     { label: "Contact Us", path: "/contact-us" },
-//     { label: "FAQs", path: "/faqs" },
-//   ];
-
-//   return (
-//     <>
-//       <AppBar
-//         position="fixed"
-//         elevation={0}
-//         sx={{
-//           background: scrolled
-//             ? alpha(theme.palette.background.paper, 0.9)
-//             : "transparent",
-//           backdropFilter: scrolled ? "blur(10px)" : "none",
-//           py: scrolled ? 0.5 : 2,
-//           borderBottom: scrolled
-//             ? `1px solid ${alpha(theme.palette.divider, 0.1)}`
-//             : "none",
-//           transition: "all .4s ease",
-//         }}
-//       >
-//         <Toolbar
-//           sx={{
-//             maxWidth: "1200px",
-//             width: "92%",
-//             mx: "auto",
-//             justifyContent: "space-between",
-//           }}
-//         >
-//           {/* Logo */}
-
-//           <Box
-//             component={Link}
-//             to="/"
-//             sx={{ display: "flex", alignItems: "center", textDecoration: "none" }}
-//           >
-//             <img src={Logo} alt="logo" style={{ height: 65 }} />
-//           </Box>
-
-//           {/* Desktop Public Nav */}
-
-//           <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
-//             {publicLinks.map((item) =>
-//               item.path ? (
-//                 <Button
-//                   key={item.label}
-//                   component={Link}
-//                   to={item.path}
-//                   sx={{
-//                     color: theme.palette.text.primary,
-//                     fontWeight: 600,
-//                     textTransform: "none",
-//                   }}
-//                 >
-//                   {item.label}
-//                 </Button>
-//               ) : (
-//                 <Button
-//                   key={item.label}
-//                   onClick={item.action}
-//                   sx={{
-//                     color: theme.palette.text.primary,
-//                     fontWeight: 600,
-//                     textTransform: "none",
-//                   }}
-//                 >
-//                   {item.label}
-//                 </Button>
-//               )
-//             )}
-//           </Box>
-
-//           {/* Right Section */}
-
-//           <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
-//             {student ? (
-//               <>
-//                 <Button
-//                   onClick={handleMenuOpen}
-//                   startIcon={<AccountCircle />}
-//                   sx={{
-//                     textTransform: "none",
-//                     fontWeight: 600,
-//                     color: theme.palette.text.primary,
-//                   }}
-//                 >
-//                   {student.name}
-//                 </Button>
-
-//                 {/* Dropdown */}
-
-//                 <Menu
-//                   anchorEl={anchorEl}
-//                   open={open}
-//                   onClose={handleMenuClose}
-//                   PaperProps={{
-//                     elevation: 3,
-//                     sx: { mt: 1.5, minWidth: 220 },
-//                   }}
-//                 >
-//                   {dashboardLinks.map((item) => (
-//                     <MenuItem
-//                       key={item.path}
-//                       onClick={() => {
-//                         navigate(item.path);
-//                         handleMenuClose();
-//                       }}
-//                     >
-//                       {item.label}
-//                     </MenuItem>
-//                   ))}
-
-//                   <Divider />
-
-//                   <MenuItem
-//                     onClick={() => {
-//                       navigate("/logout");
-//                       handleMenuClose();
-//                     }}
-//                   >
-//                     Logout
-//                   </MenuItem>
-//                 </Menu>
-//               </>
-//             ) : (
-//               <>
-//                 <Button
-//                   component={Link}
-//                   to="/login"
-//                   sx={{
-//                     fontWeight: 600,
-//                     textTransform: "none",
-//                     color: theme.palette.text.primary,
-//                   }}
-//                 >
-//                   Login
-//                 </Button>
-
-//                 <Button
-//                   component={Link}
-//                   to="/register"
-//                   variant="contained"
-//                   sx={{
-//                     ml: 2,
-//                     textTransform: "none",
-//                     fontWeight: 600,
-//                     background:
-//                       "linear-gradient(90deg,#3a86ff,#4361ee)",
-//                   }}
-//                 >
-//                   Get Started
-//                 </Button>
-//               </>
-//             )}
-//           </Box>
-
-//           {/* Mobile Menu Button */}
-
-//           <IconButton
-//             onClick={handleDrawerToggle}
-//             sx={{ display: { md: "none" } }}
-//           >
-//             <MenuIcon />
-//           </IconButton>
-//         </Toolbar>
-//       </AppBar>
-
-//       {/* MOBILE DRAWER */}
-
-//       <Drawer
-//         anchor="right"
-//         open={mobileOpen}
-//         onClose={handleDrawerToggle}
-//         sx={{
-//           "& .MuiDrawer-paper": {
-//             width: 260,
-//           },
-//         }}
-//       >
-//         <Box sx={{ p: 2 }}>
-//           <IconButton onClick={handleDrawerToggle}>
-//             <CloseIcon />
-//           </IconButton>
-
-//           <Divider sx={{ my: 2 }} />
-
-//           {/* Public Links */}
-
-//           <List>
-//             {publicLinks.map((item) => (
-//               <ListItem key={item.label} disablePadding>
-//                 <ListItemButton
-//                   onClick={() => {
-//                     handleDrawerToggle();
-
-//                     if (item.path) navigate(item.path);
-//                     else item.action();
-//                   }}
-//                 >
-//                   <ListItemText primary={item.label} />
-//                 </ListItemButton>
-//               </ListItem>
-//             ))}
-//           </List>
-
-//           <Divider sx={{ my: 2 }} />
-
-//           {/* Auth Section */}
-
-//           {student ? (
-//             <>
-//               <Typography sx={{ px: 2, mb: 1, fontWeight: 600 }}>
-//                 {student.name}
-//               </Typography>
-
-//               <List>
-//                 {dashboardLinks.map((item) => (
-//                   <ListItem key={item.path} disablePadding>
-//                     <ListItemButton
-//                       onClick={() => {
-//                         navigate(item.path);
-//                         handleDrawerToggle();
-//                       }}
-//                     >
-//                       <ListItemText primary={item.label} />
-//                     </ListItemButton>
-//                   </ListItem>
-//                 ))}
-
-//                 <ListItem disablePadding>
-//                   <ListItemButton
-//                     onClick={() => {
-//                       navigate("/logout");
-//                       handleDrawerToggle();
-//                     }}
-//                   >
-//                     <ListItemText primary="Logout" />
-//                   </ListItemButton>
-//                 </ListItem>
-//               </List>
-//             </>
-//           ) : (
-//             <>
-//               <Button
-//                 fullWidth
-//                 variant="contained"
-//                 sx={{ mb: 1 }}
-//                 onClick={() => navigate("/login")}
-//               >
-//                 Login
-//               </Button>
-
-//               <Button
-//                 fullWidth
-//                 variant="outlined"
-//                 onClick={() => navigate("/register")}
-//               >
-//                 Register
-//               </Button>
-//             </>
-//           )}
-//         </Box>
-//       </Drawer>
-//     </>
-//   );
-// }
-
-
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -551,6 +40,8 @@ import {
   AppRegistration as RegisterIcon,
   KeyboardArrowDown as ArrowDownIcon,
 } from "@mui/icons-material";
+import SchoolIcon from "@mui/icons-material/School";
+import CastForEducationIcon from "@mui/icons-material/CastForEducation";
 
 import { useAuth } from "../context/studentAuthContext";
 import Logo from "../assets/images/peer2learn.png";
@@ -565,6 +56,18 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [hoveredLink, setHoveredLink] = useState(null);
+
+  const [loginAnchor, setLoginAnchor] = useState(null);
+  const [registerAnchor, setRegisterAnchor] = useState(null);
+
+  const openLogin = Boolean(loginAnchor);
+  const openRegister = Boolean(registerAnchor);
+
+  const handleLoginOpen = (e) => setLoginAnchor(e.currentTarget);
+  const handleRegisterOpen = (e) => setRegisterAnchor(e.currentTarget);
+
+  const handleLoginClose = () => setLoginAnchor(null);
+  const handleRegisterClose = () => setRegisterAnchor(null);
 
   const open = Boolean(anchorEl);
 
@@ -909,11 +412,11 @@ export default function Navbar() {
                 </Fade>
               ) : (
                 <Fade in={true}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1.5 }}>
+                    {/* LOGIN DROPDOWN */}
                     <Button
-                      component={Link}
-                      to="/login"
                       startIcon={<LoginIcon />}
+                      onClick={handleLoginOpen}
                       sx={{
                         fontWeight: 600,
                         textTransform: "none",
@@ -932,11 +435,43 @@ export default function Navbar() {
                     >
                       Login
                     </Button>
+
+                    <Menu
+                      anchorEl={loginAnchor}
+                      open={openLogin}
+                      onClose={handleLoginClose}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          navigate("/login");
+                          handleLoginClose();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <SchoolIcon fontSize="small" />
+                        </ListItemIcon>
+                        Login as Student
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          navigate("/tutor/login");
+                          handleLoginClose();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <CastForEducationIcon fontSize="small" />
+                        </ListItemIcon>
+                        Login as Tutor
+                      </MenuItem>
+                    </Menu>
+
+
+                    {/* REGISTER DROPDOWN */}
                     <Button
-                      component={Link}
-                      to="/register"
                       variant="contained"
                       startIcon={<RegisterIcon />}
+                      onClick={handleRegisterOpen}
                       sx={{
                         textTransform: "none",
                         fontWeight: 600,
@@ -944,7 +479,6 @@ export default function Navbar() {
                         background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                         boxShadow: theme.shadows[4],
                         "&:hover": {
-                          background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
                           transform: "translateY(-2px)",
                           boxShadow: theme.shadows[8],
                         },
@@ -953,6 +487,37 @@ export default function Navbar() {
                     >
                       Get Started
                     </Button>
+
+                    <Menu
+                      anchorEl={registerAnchor}
+                      open={openRegister}
+                      onClose={handleRegisterClose}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          navigate("/register");
+                          handleRegisterClose();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <SchoolIcon fontSize="small" />
+                        </ListItemIcon>
+                        Register as Student
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          navigate("/tutor/register");
+                          handleRegisterClose();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <CastForEducationIcon fontSize="small" />
+                        </ListItemIcon>
+                        Register as Tutor
+                      </MenuItem>
+                    </Menu>
+
                   </Box>
                 </Fade>
               )}
@@ -1119,43 +684,75 @@ export default function Navbar() {
             </>
           ) : (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography fontWeight={600} color="text.secondary">
+                Login
+              </Typography>
               <Button
                 fullWidth
                 variant="outlined"
-                startIcon={<LoginIcon />}
+                startIcon={<SchoolIcon />}
                 onClick={() => {
                   navigate("/login");
                   handleDrawerToggle();
                 }}
-                sx={{
-                  py: 1.5,
-                  borderRadius: "10px",
-                  borderColor: theme.palette.primary.main,
-                  color: theme.palette.primary.main,
-                  "&:hover": {
-                    borderColor: theme.palette.primary.dark,
-                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                  },
-                }}
+                sx={{ borderRadius: "10px", py: 1.4 }}
               >
-                Login
+                Login as Student
               </Button>
+
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<CastForEducationIcon />}
+                onClick={() => {
+                  navigate("/tutor/login");
+                  handleDrawerToggle();
+                }}
+                sx={{ borderRadius: "10px", py: 1.4 }}
+              >
+                Login as Tutor
+              </Button>
+
+              <Divider sx={{ my: 1 }} />
+
+              <Typography fontWeight={600} color="text.secondary">
+                Register
+              </Typography>
+
               <Button
                 fullWidth
                 variant="contained"
-                startIcon={<RegisterIcon />}
+                startIcon={<SchoolIcon />}
                 onClick={() => {
                   navigate("/register");
                   handleDrawerToggle();
                 }}
                 sx={{
-                  py: 1.5,
                   borderRadius: "10px",
+                  py: 1.4,
                   background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                 }}
               >
-                Get Started
+                Register as Student
               </Button>
+
+              <Button
+                fullWidth
+                variant="contained"
+                startIcon={<CastForEducationIcon />}
+                onClick={() => {
+                  navigate("/tutor/register");
+                  handleDrawerToggle();
+                }}
+                sx={{
+                  borderRadius: "10px",
+                  py: 1.4,
+                  background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
+                }}
+              >
+                Register as Tutor
+              </Button>
+
             </Box>
           )}
         </Box>
